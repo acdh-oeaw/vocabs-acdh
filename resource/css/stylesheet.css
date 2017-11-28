@@ -314,7 +314,7 @@ ul.dropdown-menu > li:last-child > input {
 
 .headerbar-coloured {
   position: absolute;
-  background-color: #00748F;
+  background-color: #88D8DF;
   width: 100%;
   margin: 0 0 0 15px;
   height: 50px;
@@ -326,7 +326,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 .header-left > h1 {
-  background-color: #00748F;
+  background-color: #88D8DF;
   line-height: 50px;
   margin: 0 0 0 15px;
   opacity: 0.99;
@@ -390,13 +390,13 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button.disabled, #search-all-button[disabled], fieldset[disabled] #search-all-button, #search-all-button.disabled:hover, #search-all-button[disabled]:hover, fieldset[disabled] #search-all-button:hover, #search-all-button.disabled:focus, #search-all-button[disabled]:focus, fieldset[disabled] #search-all-button:focus, #search-all-button.disabled:active, #search-all-button[disabled]:active, fieldset[disabled] #search-all-button:active, #search-all-button.disabled.active, #search-all-button.active[disabled], fieldset[disabled] #search-all-button.active {
-  background-color: #389CA0;
+  background-color: #3c535b;
   opacity: 0.99;
   color: #afafaf;
 }
 
 .search-vocab-text {
-  background-color: #389CA0;
+  background-color: #5CC0C4;
   opacity: 0.95;
   height: 40px;
   float: left;
@@ -465,7 +465,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #lang-dropdown-toggle, .multiselect {
-  background-color: #394554;
+  background-color: #389CA0;
   border: medium none;
   border-radius: 0;
   box-shadow: none;
@@ -477,7 +477,7 @@ ul.dropdown-menu > li:last-child > input {
 
 .multiselect .dropdown-toggle, .dropdown-toggle:hover, .btn.dropdown-toggle:focus, .open > .dropdown-toggle.btn-default {
   color: #fff;
-  background-color: #394554;
+  background-color: #389CA0;
   box-shadow: none;
 }
 
