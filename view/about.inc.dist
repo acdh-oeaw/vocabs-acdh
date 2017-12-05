@@ -1,3 +1,10 @@
+<div class="about-logo">
+  <h1>{% trans "About" %}</h1>
+</div>
+<div id="about">
+  <div class="about-content">
+
+
 {# This is the template for the about page. You can enter any html here and show different language versions by using the lang value in a twig conditional as demonstrated below. #}
 {% if request.lang == 'fi' %}
 
@@ -12,8 +19,165 @@
 
 {% elseif request.lang == 'en' %}
 
-<h4>About</h4>
-<p>Skosmos is a web based open source ontology browser.</p>
-<a href="http://github.com/NatLibFi/Skosmos">Skosmos GitHub -repository</a>
+<h4>About ACDH Vocabularies</h4>
+
+<p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind.
+<br/><br/>
+The system is based on the open-source software Skosmos, which uses SKOS as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
+<br/><br/>
+ACDH Vocabularies does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the CLARIN infrastructure: the CLARIN concept registry and CLAVAS, a repository for specific metadata vocabularies. Additionally ACDH aims to offer ACDH Vocabularies as a service for partners of the national CLARIAH-AT consortium, for the Thesaurus Maintenance working group in DARIAH-EU, and for WP6 - Services and tools in PARTHENOS.
+</p>
+
+
+
+{% elseif request.lang == 'de' %}
+
+<h4>About ACDH Vocabularies</h4>
+
+<p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind.
+<br/><br/>
+The system is based on the open-source software Skosmos, which uses SKOS as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
+<br/><br/>
+ACDH Vocabularies does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the CLARIN infrastructure: the CLARIN concept registry and CLAVAS, a repository for specific metadata vocabularies. Additionally ACDH aims to offer ACDH Vocabularies as a service for partners of the national CLARIAH-AT consortium, for the Thesaurus Maintenance working group in DARIAH-EU, and for WP6 - Services and tools in PARTHENOS.
+</p>
 
 {% endif %}
+
+  </div>
+</div>
+
+
+
+<div class="about-logo">
+  <h1>{% trans "Impressum/Imprint" %}</h1>
+</div>
+
+
+<div id="about">
+  <div class="about-content">
+
+
+{# This is the template for the about page. You can enter any html here and show different language versions by using the lang value in a twig conditional as demonstrated below. #}
+{% if request.lang == 'fi' %}
+
+<h4>Tietoja sanastoselaimesta</h4>
+<p>Skosmos on web-pohjainen sanasto ja ontologiaselain.</p>
+<a href="http://github.com/NatLibFi/Skosmos">Skosmos GitHub-repositorio</a>
+{% elseif request.lang == 'sv' %}
+
+<h4>Information</h4>
+<p>Skosmos är en ontologibrowser.</p>
+<a href="http://github.com/NatLibFi/Skosmos">Skosmos på GitHub</a>
+
+{% elseif request.lang == 'en' %}
+
+<h4>Imprint ACDH Vocabularies</h4>
+
+<p>
+
+Legal disclosure according to §§ 24, 25 Austrian media law and § 5 E-Commerce law
+<br/>Media owner, publisher, responsible for content and editorial office, service provider:
+<br/><br/>
+Austrian Academy of Sciences
+<br/>Corporate body organized under public law (BGBl 569/1921 idF BGBl I 130/2003)
+<br/>Austrian Centre for Digital Humanities (ACDH)
+<br/>Dr. Ignaz Seipel-Platz 2, 1010 Vienna, Austria 
+<br/>E-Mail: acdh-tech@oeaw.ac.at
+<br/><br/>
+Nature and purpose of the business:
+<br/><br/>
+The Austrian Academy of Sciences (OEAW) has the legal duty to support the sciences and humanities in every respect. As a learned society, the OEAW fosters discourse and cooperation between science and society, politics and economy.
+<br/>The Austrian Centre for Digital Humanities (ACDH) is an OEAW institute founded with the goal to support digital methods in arts and humanities disciplines. The ACDH supports digital research in manifold ways.
+<br/>The ACDH Vocabularies website is dedicated to provide machine readable controlled vocabularies in SKOS format.
+<br/><br/>
+Signing power:
+<br/><br/>
+President: Univ.-Prof. Dr. Anton Zeilinger
+<br/>Vice president: Univ.-Doz. Dr. phil. Michael Alram
+<br/>Class presidents: Univ.-Prof. Dr. Brigitte Mazohl, Univ.-Prof. Dipl.-Ing. Dr.techn. Georg Brasseur
+<br/>Supervisory body:  Academy council. For more information, please visit http://www.oeaw.ac.at/die-oeaw/gremien-der-oeaw/akademierat/ 
+<br/><br/>
+Main aim:
+<br/><br/>
+ACDH Vocabularies offers stable hosting of and access to digital thesauri for the humanities community.
+<br/><br/>
+Disclaimer:
+<br/><br/>
+The Austrian Academy of Sciences does not take responsibility for the nature, accuracy, entirety or quality of the provided information.
+<br/>In the case of links to websites of other media owners, whose content the OEAW is neither directly nor indirectly responsible for, the OEAW does not assume liability for their content and excludes any liability in this case.
+<br/><br/>
+Copyright notice:
+<br/><br/>
+This website and its content is, unless indicated otherwise, licensed under a creative commons CC-BY 4.0 International license (Attribution – Share alike).
+<br/><br/>
+Data privacy notice:
+<br/><br/>
+This is a notice to indicate that for reasons of system security and overview of user behavior, personal data of users of this website (visiting period, operating system, browser version, browser resolution, country of origin, number of visits) will be stored using cookies and Piwik tracking. Data will be stored until further notice.  Data will not be disseminated without your explicit consent. 
+<br/>By using this website, you agree to the manner and purposes of data processing. You can disable cookies in your browser settings. However, this might limit functionality of this website. 
+<br/>The contact data published in the context of the imprint duty may not be used to send promotional or informational material not explicitly requested. We explicitly disagree with this usage. 
+
+
+</p>
+
+
+
+{% elseif request.lang == 'de' %}
+
+<h4>Impressum ACDH Vocabularies</h4>
+
+<p>
+
+
+
+Offenlegung gemäß §§ 24, 25 Mediengesetz und § 5 E-Commerce-Gesetz
+<br/><br/>
+Medieninhaberin, Herausgeberin, inhaltliche und redaktionelle Verantwortung, Dienstanbieterin:
+<br/><br/>
+Österreichische Akademie der Wissenschaften
+<br/>Juristische Person öffentlichen Rechts (BGBl 569/1921 idF BGBl I 130/2003)
+<br/>Austrian Centre for Digital Humanities (ACDH)
+<br/>Dr. Ignaz Seipel-Platz 2, 1010 Wien, Österreich 
+<br/>E-Mail: acdh-tech@oeaw.ac.at
+<br/><br/>
+Unternehmensgegenstand:
+<br/><br/>
+Die Österreichische Akademie der Wissenschaften (ÖAW) hat den gesetzlichen Auftrag, die Wissenschaft in jeder Hinsicht zu fördern. Als Gelehrtengesellschaft pflegt die ÖAW den Diskurs und die Zusammenarbeit der Wissenschaft mit Öffentlichkeit, Politik und Wirtschaft. 
+<br/>Das Austrian Centre for Digital Humanities (ACDH) ist ein Institut der ÖAW, das mit dem Ziel gegründet wurde, digitale Methoden und Ansätze in den geisteswissenschaftlichen Disziplinen zu fördern. Das ACDH unterstützt digitale Forschung in vielfältiger Weise. 
+<br/>Die ACDH Vocabularies website widmet sich der Bereitstellung von maschinenlesbaren kontrollierten Vokabulairen im SKOS-Format.
+<br/><br/>
+Vertretungsbefugte Organe:
+<br/><br/>
+Präsident: o. Univ.-Prof. Dr. Anton Zeilinger
+<br/>Vizepräsident: Univ.-Doz. Dr. phil. Michael Alram
+<br/>Klassenpräsidentin: o. Univ.-Prof. Dr. Brigitte Mazohl
+<br/>Klassenpräsident: Univ.-Prof. Dipl.-Ing. Dr.techn. Georg Brasseur
+<br/>Als Aufsichtsorgan besteht der Akademierat. Siehe mehr dazu unter http://www.oeaw.ac.at/die-oeaw/gremien-der-oeaw/akademierat/
+<br/><br/>
+Grundlegende Richtung:
+<br/><br/>
+ACDH Vocabularies stellt digitale Thesauri für die Geisteswissenschafliche Forschungsgemeinschaft dauerhaft bereit und gewährt Zugriff darauf.
+<br/><br/>
+Haftungsausschluss:
+<br/><br/>
+Die Österreichische Akademie der Wissenschaften übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen.
+<br/>Im Falle des Bestehens von Links auf Webseiten anderer Medieninhaber, für deren Inhalt die ÖAW weder direkt oder indirekt mitverantwortlich ist, übernimmt die ÖAW keine Haftung für deren Inhalte und schließt jegliche Haftung hierfür aus.
+<br/><br/>
+Urheberrechtlicher Hinweis:
+<br/><br/>
+Diese Seite und ihre Inhalte sind, sofern nicht anders gekennzeichnet, unter der creative commons Lizenz CC-BY 4.0 International lizensiert (Namensnennung – Weitergabe unter gleichen Bedingungen).
+<br/><br/>
+Datenschutzrechtlicher Hinweis:
+<br/><br/>
+Wir weisen darauf hin, dass zum Zwecke der Systemsicherheit und der Übersicht über das Nutzungsverhalten der Besuchenden im Rahmen von Cookies diverse personenbezogene Daten (Besuchszeitraum, Betriebssystem, Browserversion, innere Auflösung des Browserfensters, Herkunft nach Land, wievielter Besuch seit Beginn der Aufzeichnung) mittels Piwik-Tracking gespeichert werden. Die Daten werden bis auf weiteres gespeichert. Soweit dies erfolgt, werden diese Daten nicht ohne Ihre ausdrückliche Zustimmung an Dritte weitergegeben. 
+<br/>Durch die Nutzung der Website erklären Sie sich mit der Art und Weise sowie dem Zweck der Datenverarbeitung einverstanden. Durch eine entsprechende Einstellung in Ihrem Browser können Sie die Speicherung der Cookies verhindern. In diesem Fall stehen Ihnen aber gegebenenfalls nicht alle Funktionen der Website zur Verfügung. 
+<br/>Die im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten dürfen von Dritten nicht zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien verwendet werden. Einer derartigen Verwendung wird hiermit ausdrücklich widersprochen.
+</p>
+
+{% endif %}
+
+  </div>
+</div>
+
+
+
+

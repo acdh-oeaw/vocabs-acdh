@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+    <dc:title xml:lang="en">ARCHE Resource Type Category</dc:title>
+    <dc:title xml:lang="de">Kategorien für Ressourcen in ARCHE</dc:title>
+    <rdfs:label xml:lang="en">Resource Type Category</rdfs:label>
+    <rdfs:label xml:lang="de">Kategorien für Ressourcen</rdfs:label>
+    <dc:description xml:lang="en">The general resource type an object can have based on controlled vocabulary of DataCite metadata schema 4.0.</dc:description>
+    <dc:description xml:lang="de">Der generelle Ressourcentyp für ein Objekt. Basiert auf dem kontrollierten Vocabular von dem DataCite Metadatenschema 4.0.</dc:description>
+    <dc:creator>Martina Trognitz</dc:creator>
+    <dc:rights>https://creativecommons.org/licenses/by/4.0/</dc:rights>
+    <dc:relation rdf:resource="https://arche.acdh.oeaw.ac.at/browser/"/>
+    <dc:language>English</dc:language>
+    <dc:language>German</dc:language>
+    <dc:format>application/rdf+xml</dc:format>
+    <skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/3dData"/>
+    <skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/audioVisual"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/collection"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/dataset"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/event"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/image"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/interactiveResource"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/model"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/other"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/physicalObject"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/service"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/software"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/sound"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/text"/>
+	<skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/workflow"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/3dData">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A file containing 3d Data.</skos:definition>
+    <skos:definition xml:lang="de">Eine Datei mit 3D-Daten.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">3D-Daten</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">3d data</skos:prefLabel>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/audioVisual">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A series of visual representations imparting an impression of motion when shown in succession. May or may not include sound. May be used for films, video etc.</skos:definition>
+	<skos:definition xml:lang="de">Eine Serie visueller Darstellungen, die Bewegung zeigen, wenn sie hintereinander gezeigt werden. Kann auch Ton enthalten. Kann für Film, Video etc. verwendet werden.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Audiovisuelles Medium</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Audio Visual</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/MovingImage"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/collection">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">An aggregation of resources of various types, or a list of resources that form part of a publication. If a collection exists of a single type, use the single type to describe it.</skos:definition>
+	<skos:definition xml:lang="de">Eine Sammlung von Ressourcen unterschiedlicher Typen oder eine Liste von Ressourcesn, die Teil einer Publikation sind. Wenn die Sammlung aus Ressourcen eines einzigen Typs besteht, sollt der Ressourcentyp verwendet werden.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Datensammlung</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Collection</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Collection"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/dataset">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">Data encoded in a defined structure. Could be data from measurements.</skos:definition>
+	<skos:definition xml:lang="de">Daten, die einer definierten Strukturierung folgen, wie etwa Daten aus Messreihen.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Datenset</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Dataset</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Dataset"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/event">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A non-persistent, timebased occurrence. Descriptive information and/or content that is the basis for discovery of the purpose, location, duration, and responsible agents associated with an event.</skos:definition>
+	<skos:definition xml:lang="de">Eine nicht persistente zeitlich terminierte Begebenheit. Beschreibende Information oder Inhalt, der die Basis zur Auffindug des Grundes, des Ortes, der Dauer und der beteiligten Personen, die mit einem Ereignis assoziiert werden.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Ereignis</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Event</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Event"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/image">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A visual representation other than text. Digitised or born digital images, drawings or photographs.</skos:definition>
+	<skos:definition xml:lang="de">Eine visuelle Darstellung, die nicht Text ist. Digitalisierte oder digitale Bilder, Zeichnungen oder Fotografien.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Bild</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Image</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Image"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/interactiveResource">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A resource requiring interaction from the user to be understood, executed, or experienced. Files that require use of a viewer or query/response portals.</skos:definition>
+	<skos:definition xml:lang="de">Eine Ressource, die eine Interaktion des Nutzers benötigt, um verstanden, ausgeführt oder erlebt zu werden. Dateien, die einen Viewer oder ein Abfrage/Antwort-Portal benötigen.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Interaktive Ressource</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Interactive Resource</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/model">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">An abstract, conceptual, graphical, mathematical or visualisation model that represents empirical objects, phenomena, or physical processes. Modelled descriptions of, for example, different aspects of languages or a molecular biology reaction chain.</skos:definition>
+	<skos:definition xml:lang="de">Ein abstraktes, konzeptuelles, grafisches, mathematisches oder visuelles Modell, das empirische Objekte, Phänomene oder physische Prozesse repräsentiert. Modellierte Beschreibungen von beispielsweise verschiedenen Aspekten natürlicher Sprache oder eine molekularbiologische Reaktionskette.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Modell</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Model</skos:prefLabel>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/other">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">Choose if none of the other resource tyes applies.</skos:definition>
+	<skos:definition xml:lang="de">Wählen, wenn kein anderer Ressourcentyp passt.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Andere</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Other</skos:prefLabel>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/physicalObject">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">An inanimate, three-dimensional object or substance. E. g. an artefact.</skos:definition>
+	<skos:definition xml:lang="de">Ein unbelebtes, dreidimensionales Oject oder eine Substanz. Beispielsweise ein Artefakt.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Physisches Objekt</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Physical Object</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/PhysicalObject"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/service">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A system that provides one or more functions of value to the end-user.</skos:definition>
+	<skos:definition xml:lang="de">Ein System, das dem Nutzer eine oder mehrere Funktionen bietet.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Service</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Service</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Service"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/software">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A computer program in source code (text) or compiled form.</skos:definition>
+	<skos:definition xml:lang="de">Ein Computerprogramm, als Quellcode (Text) oder in kompilierter Form.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Software</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Software</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Software"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/sound">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A resource primarily intended to be heard.  E. g. an audio recording.</skos:definition>
+	<skos:definition xml:lang="de">Eine Ressources, die hauptsächlich gehört werden soll, wie etwa eine Tonaufnahme.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Audio</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Sound</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Sound"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/text">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A resource consisting primarily of words for reading.</skos:definition>
+	<skos:definition xml:lang="de">Eine Ressource, die hauptsächlich aus lesbaren Worten besteht.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Text</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Text</skos:prefLabel>
+	<skos:relatedMatch rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archecategory/workflow">
+	<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+	<skos:definition xml:lang="en">A structured series of steps which can be executed to produce a final outcome, allowing users a means to specify and enact their work in a more reproducible manner.</skos:definition>
+	<skos:definition xml:lang="de">Eine strukturierte Serie von Schritten, die ausgeführt werden können, um ein Ergebnis zu erzeugen und dem Nutzer erlauben Arbeitsschritte zu spezifizieren und zu reproduzieren.</skos:definition>
+	<skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+	<skos:prefLabel xml:lang="de">Workflow, Arbeitsablauf</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Workflow</skos:prefLabel>
+	<skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/Schema"/>
+</rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Dataset">
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/dataset"/>
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/dataset"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/InteractiveResource">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/interactiveResource"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/interactiveResource"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Image">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/image"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/image"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Service">
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/service"/>
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/service"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Text">
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/text"/>
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/text"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Collection">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/collection"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/collection"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.org/dc/dcmitype/PhysicalObject">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/physicalObject"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/physicalObject"/>
+  </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Software">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/software"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/software"/>
+  </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Sound">
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/sound"/>
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/sound"/>
+  </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/dcmitype/MovingImage">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/audioVisual"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/audioVisual"/>
+  </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/dcmitype/Event">
+    <skos:relatedMatch rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/event"/>
+    <skos:related rdf:resource="https://vocabs.acdh.oeaw.ac.at/archecategory/event"/>
+  </rdf:Description>
+</rdf:RDF>

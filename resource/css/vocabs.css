@@ -1,0 +1,317 @@
+.topbar-wrap {
+    background-color: #fff;
+    border-bottom: 4px solid #88dbdf;
+    min-height: 80px;
+    margin-bottom: 20px;
+}
+
+a#service-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 80px;
+    border-right: 1px solid #88dbdf;
+    position: relative;
+    padding-right: 25px;
+}
+
+#service-name {
+    padding-top: 0;
+    position: relative;
+    font-size: 22px;
+    color: #333;
+    font-weight: 500;
+    left: 0 !important;
+}
+
+div#navigation {
+    padding-top: 5px;
+}
+
+div#language {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 20px;
+    display: flex;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.acdh-nav-brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 80px;
+    border-left: 1px solid #88dbdf;
+    padding-left: 20px;
+}
+
+.acdh-nav-brand p {
+    margin: 0 15px 0 0;
+    font-size: 13px;
+    line-height: 17px;
+    text-align: right;
+    width: 130px;
+}
+
+.acdh-nav-brand img {
+    height: 45px;
+}
+
+.oeaw-nav-brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 80px;
+    border-left: 1px solid #88dbdf;
+    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.oeaw-nav-brand img {
+    height: 50px;
+}
+
+
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 20px;
+  color: #fff;
+  border-top: 4px solid #88dbdf;
+}
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+.jumbotron h1, .jumbotron .h1 {
+    font-size: 36px;
+    font-weight: 500;
+}
+
+.jumbotron p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+}
+
+p.lead a {
+    color: #88dbdf;
+    border-bottom: 1px solid #88dbdf;
+}
+
+.headerbar.frontpage-spacing {
+    background-color: #88dbdf;
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+#language > .dropdown-toggle {
+    margin: auto 4px;
+    min-height: 70px;
+}
+
+.main-container.frontpage.voclist-wide {
+    border-top: 4px solid #88dbdf;
+}
+
+@media (max-width:1200px) {
+  div#language {
+    display: none;
+  }
+
+  .topbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+  }
+
+}
+
+@media (max-width:950px) {
+
+  .oeaw-nav-brand {
+      display: none;
+  }
+
+}
+
+
+@media (max-width:850px) {
+
+  #service-name {
+      font-size: 18px;
+  }
+  
+  .acdh-nav-brand p {
+    display: none;
+  }
+
+  #navigation > a {
+      margin: auto 5px;
+  }
+
+  .topbar {
+      padding: 0 10px;
+  }
+
+  #navigation {
+      position: relative;
+  }
+
+}
+
+div#about {
+    width: 100% !important;
+}
+
+.frontpage > #maincontent > .content {
+    margin-left: 220px;
+}
+
+.about-logo {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+#about {
+    border-top: 4px solid #88dbdf;
+}
+
+.container.feedback-box {
+    margin-bottom: 20px;
+    border-top: 4px solid #88dbdf;
+}
+
+.about-content {
+    margin: 0 15px;
+    padding: 15px 10px 0 10px;
+}
+
+body.vocab > .main-container {
+    min-height: 600px;
+}
+
+/* ARCHE COPY STYLES, TO BE IMPLEMENTED */
+.main-footer {
+  background-color: #FFFFFF;
+  display: inline-block;
+  width: 100%;
+  z-index: 3;
+  position: relative;
+  }
+  .main-footer .footer-wrapper {
+    padding: 25px 0px 50px 0px;
+    display: inline-block;
+    width: 100%; }
+    .main-footer .footer-wrapper .footer-social {
+      text-align: right; }
+      .main-footer .footer-wrapper .footer-social a {
+        font-size: 24px;
+        color: #333333;
+        margin-left: 15px; }
+    .main-footer .footer-wrapper .navbar {
+      float: right;
+      padding-right: 0; }
+
+.footer-sep {
+  border-bottom: 1px solid #333333;
+  padding-bottom: 15px;
+  padding-top: 5px;
+  margin-bottom: 35px;
+  font-weight: 600;
+  font-size: 14px; }
+
+.footer-sep i {
+  font-size: 20px;
+  padding-right: 5px; }
+
+footer .el-block.first {
+  padding-left: 0; }
+
+footer .el-block.last {
+  padding-right: 0;
+  float: right; }
+
+.helpdesk-button {
+  display: block;
+  background-color: #FFFFFF;
+  border: 1px solid #88dbdf;
+  border-radius: 20px;
+  padding: 5px 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #88dbdf;
+  transition: background-color ease .2s, color ease .2s; }
+
+.helpdesk-button:hover, .helpdesk-button:focus {
+  background-color: #88dbdf;
+  color: #FFFFFF;
+  transition: background-color ease .2s, color ease .2s; }
+
+footer .bodytext {
+  font-size: 15px; }
+
+.csc-textpic-text {
+  padding-left: 20px; }
+
+footer h3 {
+  font-size: 17px;
+  margin-top: 0; }
+
+.footer-login-button {
+  float: right;
+  margin-left: 8px; }
+
+.footer-login-button i {
+  color: #88dbdf;
+  font-size: 22px;
+  margin-top: 6px;
+  transition: color ease .2s; }
+
+.footer-login-button i:hover, .footer-login-button i:focus {
+  color: #3B89AD; }
+
+.footer-imprint-bar {
+  text-align: center;
+  background-color: #F1F1F1;
+  padding: 10px 8px 8px 8px;
+  font-size: 14px; }
+
+.el-block {
+    float: left;
+}
+
+a.helpdesk-button {
+    display: block;
+    background-color: #FFFFFF;
+    border: 1px solid #88dbdf;
+    border-radius: 20px;
+    padding: 5px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #88dbdf;
+    transition: background-color ease .2s, color ease .2s;
+}
+
+.footer-partner img {
+    max-width: 70%;
+    margin-bottom: 25px;
+}
+
+body {
+    overflow-x: hidden;
+}
+

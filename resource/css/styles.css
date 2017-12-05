@@ -381,7 +381,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button {
-  background-color: #389CA0;
+  background-color: #88dbdf;
   border-radius: 0;
   border: medium none;
   height: 40px;
@@ -390,13 +390,13 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button.disabled, #search-all-button[disabled], fieldset[disabled] #search-all-button, #search-all-button.disabled:hover, #search-all-button[disabled]:hover, fieldset[disabled] #search-all-button:hover, #search-all-button.disabled:focus, #search-all-button[disabled]:focus, fieldset[disabled] #search-all-button:focus, #search-all-button.disabled:active, #search-all-button[disabled]:active, fieldset[disabled] #search-all-button:active, #search-all-button.disabled.active, #search-all-button.active[disabled], fieldset[disabled] #search-all-button.active {
-  background-color: #389CA0;
+  background-color: #88dbdf;
   opacity: 0.99;
   color: #afafaf;
 }
 
 .search-vocab-text {
-  background-color: #389CA0;
+  background-color: #88dbdf;
   opacity: 0.95;
   height: 40px;
   float: left;
@@ -1009,10 +1009,12 @@ tr {
 
 /* vocabulary
  ****************************/
+
 .container {
   background-color: #ffffff;
   width: auto;
 }
+
 
 .download-links {
   margin-bottom: 15px;

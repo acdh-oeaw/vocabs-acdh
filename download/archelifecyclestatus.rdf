@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+<rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+    <dc:title xml:lang="en">ARCHE life cycle status</dc:title>
+    <dc:title xml:lang="de">ARCHE Lebenszyklusstatus</dc:title>
+    <rdfs:label xml:lang="en">ARCHE life cycle status</rdfs:label>
+    <rdfs:label xml:lang="de">ARCHE Lebenszyklusstatus</rdfs:label>
+    <dc:description xml:lang="en">A list to indicate the life cycle status of an object in ARCHE.</dc:description>
+    <dc:description xml:lang="de">Eine Liste um den Lebenszyklusstatus eines Objektes in ARCHE anzugeben.</dc:description>
+    <dc:creator>Martina Trognitz</dc:creator>
+    <dc:rights>https://creativecommons.org/licenses/by/4.0/</dc:rights>
+    <dc:subject xml:lang="en">data life cycle</dc:subject>
+    <dc:subject xml:lang="de">Datenlebenszyklus</dc:subject>
+    <dc:relation rdf:resource="https://arche.acdh.oeaw.ac.at/browser/"/>
+    <dc:language>English</dc:language>
+    <dc:language>German</dc:language>
+    <dc:format>application/rdf+xml</dc:format>
+    <skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/active"/>
+    <skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/completed"/>
+    <skos:hasTopConcept rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/deprecated"/>
+</rdf:Description>
+  <rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/active">
+    <skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+    <skos:prefLabel xml:lang="en">active</skos:prefLabel>
+    <skos:prefLabel xml:lang="de">aktiv</skos:prefLabel>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <skos:definition xml:lang="en">Active indicates an actively worked on object.</skos:definition>
+    <skos:definition xml:lang="de">Aktiv zeigt an, dass an dem Objekt noch aktiv gearbeitet wird.</skos:definition>
+    <skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/completed">
+    <skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+    <skos:prefLabel xml:lang="en">completed</skos:prefLabel>
+    <skos:prefLabel xml:lang="de">abgeschlossen</skos:prefLabel>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <skos:definition xml:lang="en">A complete object is not longer worked on and results are final.</skos:definition>
+    <skos:definition xml:lang="de">An einem abgeschlossenen Objekt wird nicht mehr gearbeitet und die Ergebnisse können als final betrachtet werden.</skos:definition>
+    <skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/deprecated">
+    <skos:topConceptOf rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+    <skos:prefLabel xml:lang="en">deprecated</skos:prefLabel>
+    <skos:prefLabel xml:lang="de">überholt</skos:prefLabel>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <skos:definition xml:lang="en">If an object is deprecated it is not longer actively worked on and it might not be complete.</skos:definition>
+    <skos:definition xml:lang="de">Wenn ein Objekt überholt ist, wird nicht mehr aktiv daran gearbeitet und es ist nicht unbedingt vollständig abgeschlossen.</skos:definition>
+    <skos:inScheme rdf:resource="https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -107,7 +107,7 @@ a:hover {
  ***************************/
 
 html,body {
-  background-color: #d5dbde;
+  background-color: #F1F1F1;
   margin: 0;
   min-height: 100%;
   min-width: 100%;
@@ -309,7 +309,7 @@ ul.dropdown-menu > li:last-child > input {
   margin: 0 auto;
   position: relative;
   width: 95%;
-  min-height: 65px;
+  min-height: 60px;
 }
 
 .headerbar-coloured {
@@ -381,7 +381,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button {
-  background-color: #389CA0;
+  background-color: #88dbdf;
   border-radius: 0;
   border: medium none;
   height: 40px;
@@ -465,7 +465,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #lang-dropdown-toggle, .multiselect {
-  background-color: #389CA0;
+  background-color: #88dbdf;
   border: medium none;
   border-radius: 0;
   box-shadow: none;
@@ -477,7 +477,7 @@ ul.dropdown-menu > li:last-child > input {
 
 .multiselect .dropdown-toggle, .dropdown-toggle:hover, .btn.dropdown-toggle:focus, .open > .dropdown-toggle.btn-default {
   color: #fff;
-  background-color: #389CA0;
+  background-color: #88dbdf;
   box-shadow: none;
 }
 
@@ -597,6 +597,7 @@ ul.dropdown-menu > li:last-child > input {
 #vocabulary-list, #vocabulary-list-wide, #vocabulary-list-left, #vocabulary-list-right {
   background-color: #fff;
   display: inline-block;
+  padding: 20px 10px;
 }
 
 .voclist-wide #vocabulary-list {
@@ -1009,10 +1010,12 @@ tr {
 
 /* vocabulary
  ****************************/
+ 
 .container {
   background-color: #ffffff;
   width: auto;
 }
+
 
 .download-links {
   margin-bottom: 15px;
