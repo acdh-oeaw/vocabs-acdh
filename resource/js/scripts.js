@@ -221,7 +221,7 @@ function countAndSetOffset() {
     return 'height: calc(100% - ' + pixels + 'px) !important';
   });
   if ($('#sidebar').length && !$('#sidebar').hasClass('fixed')) {
-    var yOffset = window.innerHeight - ( $('#sidebar').offset().top - window.pageYOffset);
+    var yOffset = window.innerHeight - ( $('#sidebar').offset().top - window.pageYOffset + 80);
     $('#sidebar').css('height', yOffset);
   }
 }

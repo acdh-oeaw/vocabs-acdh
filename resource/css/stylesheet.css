@@ -862,7 +862,7 @@ ul.dropdown-menu > li:last-child > input {
 
 .fixed {
   height: 95%;
-  height: calc(100% - 2px) !important;
+  height: calc(100% - 300px) !important;
   position: fixed !important;
   top: 2px;
 }
