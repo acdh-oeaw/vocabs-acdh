@@ -1,3 +1,6 @@
+# vocabs-acdh
+This is a vocabulary repository service, based on Skosmos. The view templates, some styles and JS functions have been customized to make it compatible with ACDH's web applications. Follow the original installing steps of Skosmos to use this app.
+
 [![Build Status](https://travis-ci.org/NatLibFi/Skosmos.svg?branch=master)](https://travis-ci.org/NatLibFi/Skosmos)
 [![Test Coverage](https://codeclimate.com/github/NatLibFi/Skosmos/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/Skosmos/coverage)
 [![Code Climate](https://codeclimate.com/github/NatLibFi/Skosmos/badges/gpa.svg)](https://codeclimate.com/github/NatLibFi/Skosmos)
