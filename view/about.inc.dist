@@ -1,5 +1,5 @@
 <div class="about-logo">
-  <h1>{% trans "About" %}</h1>
+  <h1>{% trans "About/Über ACDH Vocabularies" %}</h1>
 </div>
 <div id="about">
   <div class="about-content">
@@ -23,22 +23,22 @@
 
 <p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind.
 <br/><br/>
-The system is based on the open-source software Skosmos, which uses SKOS as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
+The system is based on the open-source software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, which uses <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
 <br/><br/>
-ACDH Vocabularies does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the CLARIN infrastructure: the CLARIN concept registry and CLAVAS, a repository for specific metadata vocabularies. Additionally ACDH aims to offer ACDH Vocabularies as a service for partners of the national CLARIAH-AT consortium, for the Thesaurus Maintenance working group in DARIAH-EU, and for WP6 - Services and tools in PARTHENOS.
+ACDH Vocabularies does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH aims to offer ACDH Vocabularies as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
 </p>
 
 
 
 {% elseif request.lang == 'de' %}
 
-<h4>About ACDH Vocabularies</h4>
+<h4>Über ACDH Vocabularies</h4>
 
-<p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind.
+<p>In vielen Bereichen der wissenschaftlichen Arbeit spielen kontrollierte Vokabulare (Ortslexika (sog. Gazetteers), Thesauri etc.) eine wichtige Rolle als stabile Referenz für Ressourcen und um die Interoperabilität zwischen disparaten Projekten und deren Daten zu gewährleisten. Das ACDH stellt ein Repositoriumsservice für Vokabulare bereit, das die kollaborative Pflege und Veröffentlichung von Vokabularen und Taxonomien jeglicher Art ermöglicht.
 <br/><br/>
-The system is based on the open-source software Skosmos, which uses SKOS as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
+Das System basiert auf der Open-Source-Software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, welche <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> als Datenmodell verwendet. Mit Skosmos können Vokabulare angesehen, Konzepte strukturiert dargestellt und die Hierarchie der Konzepte visualisiert werden. Vokabulare können mittels einer eigenen Suchmaske durchsucht werden oder Einträge über einen alphabetischen oder thematischen Index gefunden werden. Auch sind die Vokabulare über eine REST-API zugänglich, um Linked Data zu ermöglichen.
 <br/><br/>
-ACDH Vocabularies does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the CLARIN infrastructure: the CLARIN concept registry and CLAVAS, a repository for specific metadata vocabularies. Additionally ACDH aims to offer ACDH Vocabularies as a service for partners of the national CLARIAH-AT consortium, for the Thesaurus Maintenance working group in DARIAH-EU, and for WP6 - Services and tools in PARTHENOS.
+ACDH Vocabularies bietet nicht nur kontrollierte Vokabulare für die Zwecke des ACDH, sondern wird auch für zentrale Dienste der <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> Infrastruktur verwendet: für die <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> und für <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, ein Repositorium für spezifische Metadatenvokabulare. Zusätzlich zielt das ACDH darauf ACDH Vocabularies als einen Service für Partner des nationalen <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> Konsortiums, für die Arbeitsgruppe <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> in DARIAH-EU und für <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a> anzubieten.
 </p>
 
 {% endif %}

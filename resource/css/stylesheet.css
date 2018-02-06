@@ -773,7 +773,8 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 .about-content > p > a {
-  margin: 0 5px;
+  margin: 0 2px;
+  text-decoration: underline !important;
 }
 
 .special-container {
