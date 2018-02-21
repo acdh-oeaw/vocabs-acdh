@@ -1975,6 +1975,7 @@ body, .versal, h1, h2, p, .versal-bold {
 
   #navigation > a {
     margin: auto 10px;
+    margin-right: 15px;
   }
 
   #service-logo {

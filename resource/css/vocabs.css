@@ -25,6 +25,7 @@ a#service-logo {
 }
 
 div#navigation {
+    margin-left: 15px;
     padding-top: 5px;
 }
 
@@ -33,11 +34,11 @@ div#language {
     padding-left: 5px;
     padding-right: 20px;
     display: flex;
+    margin-left: auto;
 }
 
 .topbar {
     display: flex;
-    justify-content: space-between;
 }
 
 .acdh-nav-brand {
