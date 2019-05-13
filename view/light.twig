@@ -41,8 +41,8 @@
   <div class="row">
     <div class="main-container">
       <div class="jumbotron" style="background-image: url(../assets/images/vocabs_intro_bg.jpg);">
-        <h1>A Vocabulary Repository Service by ACDH</h1>
-        <p class="lead">In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind. <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Read more about ACDH Vocabularies</a></p>
+        <h1>A Vocabulary Repository Service</h1>
+        <p class="lead">In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a vocabulary repository service that allows for collaborative maintenance and publication of vocabularies and taxonomies of any kind. <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Read more about the Vocabulary Service</a></p>
       </div>
     </div>
   </div>
