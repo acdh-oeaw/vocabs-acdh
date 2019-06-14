@@ -26,18 +26,18 @@
 
 <title>Vocabs services</title>
 </head>
-<body{% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' %} class="frontpage-logo"{% else %} class="vocab vocab-{{ request.vocabid }}"{% endif %}>
+<body{% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' or request.page != 'impressum' %} class="frontpage-logo"{% else %} class="vocab vocab-{{ request.vocabid }}"{% endif %}>
   <div id="skiptocontent">
     <a href="{{ request.langurl }}#maincontent">skip to main content</a>
   </div>
-  {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}<div class="topbar-white">{% endif %}
-    <div class="topbar-wrap"><div class="topbar{% if request.vocabid != '' or request.vocabid == 'feedback' or request.vocabid == 'about' %} topbar-white{% else %} frontpage{% endif %}">
+  {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' or request.page == 'impressum' %}<div class="topbar-white">{% endif %}
+    <div class="topbar-wrap"><div class="topbar{% if request.vocabid != '' or request.vocabid == 'feedback' or request.vocabid == 'about' or request.vocabid == 'impressum' %} topbar-white{% else %} frontpage{% endif %}">
       {% include 'topbar.twig' %}
     </div></div>
-  {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}</div>{% endif %}
+  {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' or request.page == 'impressum' %}</div>{% endif %}
 
 
-{% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' %}
+{% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' %}
   <div class="row">
     <div class="main-container">
       <div class="jumbotron" style="background-image: url(../assets/images/vocabs_intro_bg.jpg);">
@@ -61,7 +61,7 @@
     {% if not request.vocabid == '' %}
     <div id="sidebar">
     {% block sidebar %}
-      {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}
+      {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' or request.page == 'impressum' %}
       <div class="sidebar-buttons">
         <ul class="nav nav-tabs{% if vocab.config.showChangeList and vocab.config.groupClassURI and vocab.config.showAlphabeticalIndex %} nav-four-wide{% endif %}">
         {% if request.page != 'search' %}
@@ -140,7 +140,7 @@
               <option></option>
               {% for uri,group in group_index %}
                 <option value="{{ group.uri }}">{{ group.prefLabel }}</option>
-              {% endfor %}
+              {% endfor %}abo
             </select>
           </div>
           {% endif %}
@@ -156,12 +156,12 @@
     </div>
     {% endif %}
 
-    {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and not global_search %}
+    {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' and not global_search %}
       {% include 'left.inc' ignore missing %}
     {% endif %}
     {% block error %}
     <div id="maincontent">
-      {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and not global_search %}
+      {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' and not global_search %}
         {% include 'vocabularylist.twig' %}
       {% endif %}
       <div class="{% if global_search %}global-{% elseif request.page == 'vocab' and not request.vocab.config.showAlphabeticalIndex and not request.vocab.config.showTopConcepts and not request.vocab.config.showChangeList %}wide-{% endif %}content">
@@ -170,7 +170,7 @@
       </div>
     </div>
     {% endblock %}
-    {% if request.vocabid == '' and not global_search and request.page != 'feedback' and request.page != 'about' %}
+    {% if request.vocabid == '' and not global_search and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' %}
       {% include 'right.inc' ignore missing %}
     {% endif %}
   </div>
@@ -210,7 +210,7 @@
       </div>
     </div>
     <div class="footer-imprint-bar">
-      © Copyright OEAW | <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Impressum/Imprint</a>
+      © Copyright OEAW | <a href="{{ request.lang }}/impressum{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Impressum/Imprint</a>
     </div>
   </footer>
 

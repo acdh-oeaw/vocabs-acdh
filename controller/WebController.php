@@ -350,6 +350,33 @@ class WebController extends Controller
                 'request' => $request,
             ));
     }
+    
+    /**
+     * Invokes the impressum page for the Skosmos service.
+     */
+    public function invokeImpressumPage($request)
+    {
+        $template = $this->twig->loadTemplate('impressum.twig');
+        $this->setLanguageProperties($request->getLang());
+        $url = $request->getServerConstant('HTTP_HOST');
+        $version = $this->model->getVersion();
+
+        $params = http_build_query(array(
+            'serviceID' => '6858',
+            'outputLang' => $request->getLang()
+        ));
+        
+        $response = file_get_contents('https://shared.acdh.oeaw.ac.at/acdh-common-assets/api/imprint.php?'.$params);
+        
+        echo $template->render(
+            array(
+                'languages' => $this->languages,
+                'version' => $version,
+                'server_instance' => $url,
+                'request' => $request,
+                'content' => $response
+            ));
+    }
 
     /**
      * Invokes the search for concepts in all the availible ontologies.

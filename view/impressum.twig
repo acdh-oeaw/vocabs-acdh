@@ -1,0 +1,12 @@
+{% extends "light.twig" %}
+{% block sidebar %}{% endblock %}
+{% block headernav %}{% endblock %}
+{% block content %}
+
+{% include ['impressum.inc', 'impressum.inc.dist']  %}
+
+
+<div class="version">
+  <p>{% trans %}Skosmos version {{ version }}{% endtrans %}</p>
+</div>
+{% endblock %}

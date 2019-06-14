@@ -1,0 +1,25 @@
+
+
+{% if request.lang == 'de' %}
+    <div class="about-logo">
+        <h1>{% trans "Imprint" %}</h1>
+    </div>
+    <div id="about">
+        <div class="about-content">
+            <div id="imprint-content"><!-- #imprint-content -->
+                {{ content| raw  }}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="about-logo">
+        <h1>{% trans "Impressum" %}</h1>
+    </div>
+    <div id="about">
+        <div class="about-content">
+            <div id="imprint-content"><!-- #imprint-content -->
+                {{ content| raw  }}
+            </div>
+        </div>
+    </div>
+{% endif %}

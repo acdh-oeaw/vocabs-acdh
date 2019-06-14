@@ -33,7 +33,7 @@ if (sizeof($parts) <= 2) {
         $request->setLang($parts[1]);
         $content_lang = $request->getQueryParam('clang');
         $request->setContentLang($content_lang);
-        ($parts[2] == 'about' || $parts[2] == 'feedback' || $parts[2] == 'search') ? $request->setPage($parts[2]) : $request->setPage('');
+        ($parts[2] == 'about' || $parts[2] == 'feedback' || $parts[2] == 'search' || $parts[2] == 'impressum') ? $request->setPage($parts[2]) : $request->setPage('');
         if ($request->getPage() == '') {
             $controller->invokeVocabularies($request);
         } elseif ($request->getPage() == 'about') {
@@ -42,6 +42,8 @@ if (sizeof($parts) <= 2) {
             $controller->invokeFeedbackForm($request);
         } elseif ($request->getPage() == 'search') {
             $controller->invokeGlobalSearch($request);
+        } elseif ($request->getPage() == 'impressum') {
+            $controller->invokeImpressumPage($request);            
         } else {
             $controller->invokeGenericErrorPage($request);
         }
