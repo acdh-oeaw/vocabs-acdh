@@ -28,6 +28,15 @@ h2 {
   font-family: 'Fira Sans';
   font-size: 16px;
 }
+h3 {
+  font-family: 'Fira Sans';
+}
+h4 {
+  font-family: 'Fira Sans';
+}
+span {
+    font-family: 'Fira Sans';
+}
 
 .navigation-font {
   font-family: 'Fira Sans';
