@@ -41,8 +41,20 @@
   <div class="row">
     <div class="main-container">
       <div class="jumbotron" style="background-image: url(../assets/images/vocabs_intro_bg.jpg);">
-        <h1>Vocabs services</h1>
-        <p class="lead">In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides services and tools that allow for collaborative creation, maintenance and publication of vocabularies and taxonomies of any kind. <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Read more</a></p>
+        {% if request.lang == 'de' %}  
+            <h1>Vocabs services</h1>
+            <p class="lead">
+                Kontrollierte Vokabulare (Gazetteers, Thesauri, etc.) spielen in vielen Bereichen wissenschaftlichen Arbeitens eine entscheidende Rolle. Sie gewährleisten stabile Referenzen für Ressourcen und sind Voraussetzung für optimale Interoperabilität zwischen unterschiedlichen Projekten und deren Daten. Mit der Vocabs Suite stellt das ACDH eine Reihe von Diensten zur Verfügung, welche die Erstellung, Wartung und Veröffentlichung von Vokabularen und Taxonomien in kollaborativer Arbeitsweise unterstützen.
+                <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Weiterlesen</a>
+            </p>
+        {% else %}    
+            <h1>Vocabs services</h1>
+            <p class="lead">
+                In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides a suite of Vocabs services that allow for collaborative creation, maintenance and publication of vocabularies and taxonomies of any kind.
+                <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Read more</a>
+            </p>
+        {% endif %}    
+        
       </div>
     </div>
   </div>
@@ -194,7 +206,7 @@
             <p class="bodytext">Sonnenfelsgasse 19,<br>
             1010 Vienna</p>
             <p class="bodytext">T: +43 1 51581-2200<br>
-            E: <a href="mailto:acdh@oeaw.ac.at" style="font-weight:600;">acdh(at)oeaw.ac.at</a></p>
+            E: <a href="mailto:acdh-helpdesk@oeaw.ac.at" style="font-weight:600;">acdh-helpdesk(at)oeaw.ac.at</a></p>
           </div>
         </div>
         <div class="el-block col-lg-3 col-md-6 col-sm-6 col-xs-12">
