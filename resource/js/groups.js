@@ -50,7 +50,7 @@ function invokeGroupTree() {
     $treeObject.jstree('open_node', node.node);
   });
 
-  $('.group-hierarchy').jstree({ 
+  $treeObject.jstree({
     'plugins' : ['sort'],
     'sort' : function (a,b) { return naturalCompare(this.get_text(a).toLowerCase(), this.get_text(b).toLowerCase()); },
     'core' : { 
@@ -90,7 +90,17 @@ function invokeGroupTree() {
 }
 
 function createGroupNode(uri, groupObject) {
-  var groupPage = uri.indexOf(uriSpace) !== -1 ? uri.substr(uriSpace.length) : '?uri=' + encodeURIComponent(uri); 
+	var groupPage;
+	if (uri.indexOf(uriSpace) !== -1) {	
+		groupPage = uri.substr(uriSpace.length);
+		if (/[^a-zA-Z0-9\.]/.test(groupPage) || groupPage.indexOf("/") > -1 ) {
+	      // contains special characters or contains an additional '/' - fall back to full URI
+		  groupPage = '?uri=' + encodeURIComponent(uri);
+	    }
+	} else {
+		groupPage = '?uri=' + encodeURIComponent(uri);
+	}
+  
   var node = {children : [], a_attr : {'data-uri' : uri, "href" : vocab + '/' + lang + '/page/' + groupPage, "class" : "group" }};
   node.text = groupObject.prefLabel;
   if (groupObject.hasMembers || groupObject.isSuper)

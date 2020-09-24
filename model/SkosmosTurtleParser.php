@@ -1,6 +1,6 @@
 <?php
 
-class SkosmosTurtleParser extends EasyRdf_Parser_Turtle
+class SkosmosTurtleParser extends EasyRdf\Parser\Turtle
 {
     private $bytePos = 0;
     private $dataLength = null;
@@ -15,7 +15,7 @@ class SkosmosTurtleParser extends EasyRdf_Parser_Turtle
     }
 
     /**
-     * A lot faster since we're now only reading the next 4 bytes 
+     * A lot faster since we're now only reading the next 4 bytes
      * instead of the whole string.
      * Gets the next character to be returned by read().
      */

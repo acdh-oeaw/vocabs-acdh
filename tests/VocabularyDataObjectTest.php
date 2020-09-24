@@ -1,7 +1,7 @@
 
 <?php
 
-class VocabularyDataObjectTest extends PHPUnit_Framework_TestCase
+class VocabularyDataObjectTest extends PHPUnit\Framework\TestCase
 {
 
   /**
@@ -11,9 +11,9 @@ class VocabularyDataObjectTest extends PHPUnit_Framework_TestCase
   {
     $mockmod = $this->getMockBuilder('Model')->disableOriginalConstructor()->getMock();
     $mockvoc = $this->getMockBuilder('Vocabulary')->disableOriginalConstructor()->getMock();
-    $mockres = $this->getMockBuilder('EasyRdf_Resource')->disableOriginalConstructor()->getMock();
-    $vocdao = new VocabularyDataObject($mockmod, $mockvoc, $mockres); 
+    $mockres = $this->getMockBuilder('EasyRdf\Resource')->disableOriginalConstructor()->getMock();
+    $vocdao = new VocabularyDataObject($mockmod, $mockvoc, $mockres);
     $this->assertInstanceOf('VocabularyDataObject', $vocdao);
   }
-  
+
 }

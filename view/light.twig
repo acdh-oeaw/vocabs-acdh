@@ -21,7 +21,6 @@
 <link href="{{ ServiceCustomCss }}" media="screen, print" rel="stylesheet" type="text/css">
 {% endif %}
 {% for plugin, files in request.plugins.pluginsCSS %}{% for file in files %}<link href="{{ file }}" media="screen, print" rel="stylesheet" type="text/css">{% endfor %}{% endfor %}
-
 <link href="resource/css/vocabs.css" media="screen, print" rel="stylesheet" type="text/css">
 
 <title>Vocabs services</title>
@@ -31,11 +30,12 @@
     <a href="{{ request.langurl }}#maincontent">skip to main content</a>
   </div>
   {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}<div class="topbar-white">{% endif %}
-    <div class="topbar-wrap"><div class="topbar{% if request.vocabid != '' or request.vocabid == 'feedback' or request.vocabid == 'about' %} topbar-white{% else %} frontpage{% endif %}">
+    <div class="topbar-wrap">
+      <div class="topbar{% if request.vocabid != '' or request.vocabid == 'feedback' or request.vocabid == 'about' %} topbar-white{% else %} frontpage{% endif %}">
       {% include 'topbar.twig' %}
-    </div></div>
+      </div>
+    </div>
   {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}</div>{% endif %}
-
 
 {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' %}
   <div class="row">
@@ -54,21 +54,16 @@
                 <a href="{{ request.lang }}/about{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Read more</a>
             </p>
         {% endif %}    
-        
       </div>
     </div>
   </div>
 {% endif %}
-
 
   {% block headernav %}
   <div class="headerbar{% if request.vocabid == '' or global_search %} frontpage-spacing{% endif %}">
     {% include 'headerbar.twig' %}
   </div>
   {% endblock %}
-
-
-
   <div class="main-container{% if request.vocabid == '' or global_search %} frontpage{% if list_style %} {{ list_style }}{% endif %}{% endif %}">
     {% if not request.vocabid == '' %}
     <div id="sidebar">
@@ -111,9 +106,9 @@
               {% endif %}
               <li>
               {% if value.altLabel %}
-              <span class="replaced">{{ value.altLabel }}</span>	&rarr; <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}</a>
+              <span class="replaced">{{ value.altLabel }}</span>	&rarr; <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}{% if value.qualifier %} ({{ value.qualifier }}){% endif %}</a>
               {% else %}
-              <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}</a>
+              <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}{% if value.qualifier %} ({{ value.qualifier }}){% endif %}</a>
               {% endif %}
              </li>
               {% endfor %}
@@ -127,9 +122,8 @@
           <div class="input-group">
             <span class="versal">{% trans "By scheme" %}</span>
             <select id="scheme-limit" value="{{ limit-scheme }}" class="form-control multiselect" multiple="multiple">
-              <option></option>
               {% for uri,scheme in conceptSchemes %}
-                <option value="{{ uri }}">{% if scheme.label %}{{ scheme.label }}{% else %}{{ uri|trans }}{% endif %}</option>
+                <option value="{{ uri }}">{% if scheme.prefLabel %}{{ scheme.prefLabel }}{% elseif scheme.label %}{{ scheme.label }}{% elseif scheme.title %}{{ scheme.title }}{% else %}{{ uri|trans }}{% endif %}</option>
               {% endfor %}
             </select>
           </div>
@@ -138,7 +132,6 @@
           <div class="input-group">
             <span class="versal">{% trans "By type" %}</span>
             <select id="type-limit" value="{{ limit-type }}" class="form-control multiselect" multiple="multiple">
-              <option></option>
               {% for uri,type in types %}
                 <option value="{{ uri }}">{% if type.label %}{{ type.label }}{% else %}{{ uri|trans }}{% endif %}</option>
               {% endfor %}
@@ -186,7 +179,6 @@
       {% include 'right.inc' ignore missing %}
     {% endif %}
   </div>
-
   <footer class="main-footer" role="contentinfo">
     <div class="main-container">
       <div class="footer-wrapper">
@@ -194,14 +186,14 @@
           <i aria-hidden="true" class="fa fa-comment-o"></i> CONTACT <span class="footer-login-button"><a href="https://arche.acdh.oeaw.ac.at/browser/user/login"><i aria-hidden="true" class="fa fa-sign-in"></i></a></span>
         </div>
         <div class="el-block col-lg-1 col-md-6 col-sm-6 col-xs-12 first">
-          <a href="https://www.oeaw.ac.at/acdh/acdh-home/" target="_blank" rel="noopener" aria-label="ACDH">
+          <a href="https://www.oeaw.ac.at/acdh/" target="_blank" rel="noopener" aria-label="ACDH">
             <img src="https://fundament.acdh.oeaw.ac.at/common-assets/images/acdh_logo.svg" alt="ACDH-CH" title="Austrian Center for Digital Humanities and Cultural Heritage">
           </a>
         </div>
         <div class="el-block col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="csc-textpic-text">
             <p class="bodytext">ACDH-CH<br>
-            Austrian Centre for Digital Humanities and Cultural Heritage<br/>
+            Austrian Centre for Digital Humanities and Cultural Heritage<br>
             Austrian Academy of Sciences</p>
             <p class="bodytext">Sonnenfelsgasse 19,<br>
             1010 Vienna</p>
@@ -222,7 +214,7 @@
       </div>
     </div>
     <div class="footer-imprint-bar">
-      © Copyright OEAW | <a href="{{ request.lang }}/impressum{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Impressum/Imprint</a>
+      &#169; Copyright OEAW | <a href="{{ request.lang }}/impressum{% if request.contentLang and request.contentLang != request.lang %}?clang={{ request.contentLang }}{% endif %}{% if request.queryParam('anylang') == 'on' %}{% if request.contentLang == request.lang %}?{% else %}&{% endif %}anylang=on{% endif %}">Impressum/Imprint</a>
     </div>
   </footer>
 

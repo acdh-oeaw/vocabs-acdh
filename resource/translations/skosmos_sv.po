@@ -1,14 +1,11 @@
-# Finnish translation of ONKI Light
-# Copyright SeCo 2012 (C)
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: ONKI Light\n"
+"Project-Id-Version: Skosmos\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-16 10:24+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Henri Ylikotila <henri.ylikotila@helsinki.fi>\n"
-"Language-Team: ONKI Team <onki-posti@helsinki.fi>\n"
+"Language-Team: Finto Team <finto-posti@helsinki.fi>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,6 +16,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: view\n"
 "X-Poedit-SearchPath-1: controller\n"
 "X-Poedit-SearchPath-2: model\n"
+
+msgid "Download this vocabulary:"
+msgstr "Ladda ned denna vokabulär:"
 
 #: controller/Controller.php:38
 #: /tmp/cache/587c83500d6c9/4e/4e05e5051b20c875609479922a558d59b8500ae386eaf79bc460e69d8781a753.php:21
@@ -239,8 +239,11 @@ msgid "Send feedback"
 msgstr "Sänd respons"
 
 #: /tmp/cache/587c83500d6c9/f2/f29f57cf31b29541d6f810d43d1f7a07e79cfddcf23678f04612a410c0f0607b.php:51
-msgid "Show all breadcrumb paths"
+msgid "show all # paths"
 msgstr "visa alla # sökväg"
+
+msgid "show all # values"
+msgstr "visa alla # värden"
 
 #: /tmp/cache/587c83500d6c9/58/58e9c1cebb82d52daf56fab57cd7b86ed47b1d8a86a915177156746eef73248e.php:72
 msgid "Skosmos version %version%"
@@ -634,7 +637,7 @@ msgstr "Relaterade begrepp"
 
 #: /tmp/cache/587c83500d6c9/4e/4e05e5051b20c875609479922a558d59b8500ae386eaf79bc460e69d8781a753.php:139
 msgid "skos:relatedMatch"
-msgstr "Relaterade motsvarande begrepp"
+msgstr "Relaterat begrepp i annan vokabulär"
 
 #: /tmp/cache/587c83500d6c9/4e/4e05e5051b20c875609479922a558d59b8500ae386eaf79bc460e69d8781a753.php:183
 msgid "skos:related_help"
@@ -695,7 +698,7 @@ msgstr "Information"
 
 #: /tmp/cache/587c83509f047/ab/abd3710fda280028e428e4bc415383b12c9a30cc34eadffd21ff4130ae796b99.php:138
 msgid "Alternate terms"
-msgstr "Ersatta termer"
+msgstr "Hänvisningstermer"
 
 #: /tmp/cache/587c83509f047/ab/abd3710fda280028e428e4bc415383b12c9a30cc34eadffd21ff4130ae796b99.php:130
 msgid "Concept language"
@@ -762,190 +765,11 @@ msgstr ""
 "ex.: *nät eller: *patent*. Om du inte använder asterisk görs sökningen med "
 "trunkering i slutet."
 
-#~ msgid "dc11:contributor"
-#~ msgstr "Medförfattare"
+msgid "feedback_enter_name_email"
+msgstr ""
+"Ange ditt namn och din e-postadress så svarar vi dig personligen. Om du vill "
+"kan du också ge respons anonymt. OBS! Respons som gäller en viss vokabulär "
+"styrs direkt till vokabulärens upprätthållare."
 
-#~ msgid "dc11:creator"
-#~ msgstr "Författare"
-
-#~ msgid "dc11:description"
-#~ msgstr "Beskrivning"
-
-#~ msgid "dc11:license"
-#~ msgstr "Licens"
-
-#~ msgid "dc11:publisher"
-#~ msgstr "Utgivare"
-
-#~ msgid "dc11:relation"
-#~ msgstr "Relation"
-
-#~ msgid "dc11:rights"
-#~ msgstr "Rättigheter"
-
-#~ msgid "dc11:source"
-#~ msgstr "Källa"
-
-#~ msgid "dc11:title"
-#~ msgstr "Namn"
-
-#~ msgid "Error: the vocabulary does not contain terms beginning with"
-#~ msgstr "Vokabulären innehåller inga termer som börjar med"
-
-#~ msgid "Vocabularies on the server"
-#~ msgstr "Tillgängliga tesaurusar och ontologier"
-
-#~ msgid "Modified concepts"
-#~ msgstr "Editerade begrepp"
-
-#~ msgid "New concepts"
-#~ msgstr "Nya begrepp"
-
-#~ msgid "All"
-#~ msgstr "Visar alla"
-
-#~ msgid "results"
-#~ msgstr "sökresultat"
-
-#~ msgid "results for"
-#~ msgstr "sökresultat för"
-
-#~ msgid "Language literal"
-#~ msgstr "På svenska"
-
-#~ msgid "skos:hiddenLabel"
-#~ msgstr "Dolda begrepp"
-
-#~ msgid "concepts within the group"
-#~ msgstr "Begrepp inom gruppen"
-
-#~ msgid "dc11:created"
-#~ msgstr "Skapad"
-
-#~ msgid "dc11:modified"
-#~ msgstr "Ändringsdatum"
-
-#~ msgid "language_changed_message"
-#~ msgstr ""
-#~ "Språket som du valt stöds inte i den här vokabulären. Därför visas sidan "
-#~ "inte på svenska."
-
-#~ msgid "Show matches in any language"
-#~ msgstr "Visa även träffar på andra språk"
-
-#~ msgid "ar"
-#~ msgstr "arabiska"
-
-#~ msgid "bg"
-#~ msgstr "bulgariska"
-
-#~ msgid "cs"
-#~ msgstr "tjeckiska"
-
-#~ msgid "da"
-#~ msgstr "danska"
-
-#~ msgid "de"
-#~ msgstr "tyska"
-
-#~ msgid "el"
-#~ msgstr "grekiska"
-
-#~ msgid "en"
-#~ msgstr "engelska"
-
-#~ msgid "es"
-#~ msgstr "spanska"
-
-#~ msgid "et"
-#~ msgstr "estniska"
-
-#~ msgid "fa"
-#~ msgstr "persiska"
-
-#~ msgid "fi"
-#~ msgstr "finska"
-
-#~ msgid "fr"
-#~ msgstr "franska"
-
-#~ msgid "hi"
-#~ msgstr "hindi"
-
-#~ msgid "hr"
-#~ msgstr "kroatiska"
-
-#~ msgid "hu"
-#~ msgstr "ungerska"
-
-#~ msgid "it"
-#~ msgstr "italienska"
-
-#~ msgid "ja"
-#~ msgstr "japanska"
-
-#~ msgid "ko"
-#~ msgstr "koreanska"
-
-#~ msgid "la"
-#~ msgstr "på latinska"
-
-#~ msgid "lo"
-#~ msgstr "laotiska"
-
-#~ msgid "lt"
-#~ msgstr "litauiska"
-
-#~ msgid "lv"
-#~ msgstr "lettiska"
-
-#~ msgid "mt"
-#~ msgstr "maltesiska"
-
-#~ msgid "nl"
-#~ msgstr "nederländska"
-
-#~ msgid "pl"
-#~ msgstr "polska"
-
-#~ msgid "pt"
-#~ msgstr "portugisiska"
-
-#~ msgid "ro"
-#~ msgstr "rumänska"
-
-#~ msgid "ru"
-#~ msgstr "ryska"
-
-#~ msgid "sk"
-#~ msgstr "slovakiska"
-
-#~ msgid "sl"
-#~ msgstr "slovenska"
-
-#~ msgid "sr"
-#~ msgstr "serbiska"
-
-#~ msgid "sv"
-#~ msgstr "svenska"
-
-#~ msgid "te"
-#~ msgstr "telugu"
-
-#~ msgid "th"
-#~ msgstr "thailändska"
-
-#~ msgid "tr"
-#~ msgstr "turkiska"
-
-#~ msgid "zh"
-#~ msgstr "kinesiska"
-
-#~ msgid "Download"
-#~ msgstr "Ladda ned"
-
-#~ msgid "skos:prefLabel_help"
-#~ msgstr "Skrivsätt för den föredragna termen för begreppet."
-
-#~ msgid "short_search_example"
-#~ msgstr "t.ex. katt eller *nät"
+msgid "concept_types"
+msgstr "Typ av koncept"

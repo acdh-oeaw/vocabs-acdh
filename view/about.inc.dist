@@ -121,7 +121,6 @@
                 </div>
             </div>
 
-            
             <!--<br/><br/>
             The system is based on the open-source software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, which uses <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
             <br/><br/>
@@ -227,19 +226,12 @@
                 </div>
             </div>
 
-            
             <!--<br/><br/>
             The system is based on the open-source software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, which uses <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
             <br/><br/>
             Vocabs does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH aims to offer Vocabs as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
             </p>-->
 
-
         {% endif %}
     </div>
 </div>
-
-
-
-
-

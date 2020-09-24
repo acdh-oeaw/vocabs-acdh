@@ -21,11 +21,12 @@ class DataObject
     /**
      * Initializes the DataObject
      * @param Model $model
-     * @param EasyRdf_Resource $resource
+     * @param EasyRdf\Resource $resource
+     * @throws Exception
      */
     public function __construct($model, $resource)
     {
-        if (!($model instanceof Model) || !($resource instanceof EasyRdf_Resource)) {
+        if (!($model instanceof Model) || !($resource instanceof EasyRdf\Resource)) {
             throw new Exception('Invalid constructor parameter given to DataObject.');
         }
 
@@ -40,7 +41,7 @@ class DataObject
      * @param Vocabulary $exvoc external vocabulary to query
      * @param string $exuri resource URI
      * @param string $lang language of label to query for
-     * @return EasyRdf_Literal label, or null if not found in vocabulary
+     * @return EasyRdf\Literal label, or null if not found in vocabulary
      */
     protected function getExternalLabel($exvoc, $exuri, $lang)
     {
@@ -118,13 +119,21 @@ class DataObject
         //if neither in $order, then a simple alphabetic sort...
         return ($a < $b) ? -1 : 1;
     }
-        
+
     /**
      * Getter function to retrieve the ui language from the locale.
      */
-    public function getEnvLang()    
+    public function getEnvLang()
     {
        // get language from locale, same as used by gettext, set by Controller
        return substr(getenv("LC_ALL"), 0, 2); // @codeCoverageIgnore
+    }
+
+    /**
+     * Getter function for retrieving the resource.
+     */
+    public function getResource()
+    {
+        return $this->resource;
     }
 }
