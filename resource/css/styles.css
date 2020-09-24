@@ -28,15 +28,6 @@ h2 {
   font-family: 'Fira Sans', sans-serif;
   font-size: 16px;
 }
-h3 {
-  font-family: 'Fira Sans';
-}
-h4 {
-  font-family: 'Fira Sans';
-}
-span {
-    font-family: 'Fira Sans';
-}
 
 .navigation-font {
   font-family: 'Fira Sans', sans-serif;
@@ -390,7 +381,7 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button {
-  background-color: #88dbdf;
+  background-color: #394554;
   border-radius: 0;
   border: medium none;
   height: 40px;
@@ -399,13 +390,13 @@ ul.dropdown-menu > li:last-child > input {
 }
 
 #search-all-button.disabled, #search-all-button[disabled], fieldset[disabled] #search-all-button, #search-all-button.disabled:hover, #search-all-button[disabled]:hover, fieldset[disabled] #search-all-button:hover, #search-all-button.disabled:focus, #search-all-button[disabled]:focus, fieldset[disabled] #search-all-button:focus, #search-all-button.disabled:active, #search-all-button[disabled]:active, fieldset[disabled] #search-all-button:active, #search-all-button.disabled.active, #search-all-button.active[disabled], fieldset[disabled] #search-all-button.active {
-  background-color: #88dbdf;
+  background-color: #3c535b;
   opacity: 0.99;
   color: #afafaf;
 }
 
 .search-vocab-text {
-  background-color: #88dbdf;
+  background-color: #3c535b;
   opacity: 0.95;
   height: 40px;
   float: left;
@@ -1038,12 +1029,10 @@ li.sub-group {
 
 /* vocabulary
  ****************************/
-
 .container {
   background-color: #ffffff;
   width: auto;
 }
-
 
 .download-links {
   margin-bottom: 15px;
