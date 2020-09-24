@@ -1,7 +1,8 @@
 <?php
 
 /* Register text: namespace needed for jena-text queries */
-EasyRdf_Namespace::set('text', 'http://jena.apache.org/text#'); // @codeCoverageIgnore
+EasyRdf\RdfNamespace::set('text', 'http://jena.apache.org/text#'); // @codeCoverageIgnore
+EasyRdf\RdfNamespace::set('arq', 'http://jena.apache.org/ARQ/function#'); // @codeCoverageIgnore
 
 /**
  * Provides functions tailored to the JenaTextSparql extensions for the Fuseki SPARQL index.
@@ -29,10 +30,11 @@ class JenaTextSparql extends GenericSparql
      *
      * @param string $term search term
      * @param string $property property to search (e.g. 'skos:prefLabel'), or '' for default
+     * @param string $langClause jena-text clause to limit search by language code
      * @return string SPARQL text search clause
      */
 
-    private function createTextQueryCondition($term, $property = '', $lang = '')
+    private function createTextQueryCondition($term, $property = '', $langClause = '')
     {
         // construct the lucene search term for jena-text
 
@@ -47,11 +49,9 @@ class JenaTextSparql extends GenericSparql
         $term = str_replace('\\', '\\\\', $term); // escape backslashes
         $term = str_replace("'", "\\'", $term); // escape single quotes
 
-        $langClause = empty($lang) ? '' : "'lang:$lang*'";
-
         $maxResults = self::MAX_N;
 
-        return "(?s ?score ?match) text:query ($property '$term' $langClause $maxResults) .";
+        return "(?s ?score ?match) text:query ($property '$term' $maxResults $langClause) .";
     }
 
     /**
@@ -63,14 +63,40 @@ class JenaTextSparql extends GenericSparql
     protected function generateConceptSearchQueryCondition($term, $searchLang)
     {
         # make text query clauses
-        $textcond = $this->createTextQueryCondition($term, '?prop', $searchLang);
-        
+        $langClause = $searchLang ? '?langParam' : '';
+        $textcond = $this->createTextQueryCondition($term, '?prop', $langClause);
+
         if ($this->isDefaultEndpoint()) {
             # if doing a global search, we should target the union graph instead of a specific graph
             $textcond = "GRAPH <urn:x-arq:UnionGraph> { $textcond }";
         }
-        
-        return $textcond;    
+
+        return $textcond;
+    }
+
+    /**
+     *  This function generates jenatext language clauses from the search language tag
+     * @param string $lang
+     * @return string formatted language clause
+     */
+    protected function generateLangClause($lang) {
+        return "'lang:$lang*'";
+    }
+
+
+    /**
+     * Generates sparql query clauses used for ordering by an expression. Uses a special collation function
+     * if configuration for it is enabled.
+     * @param string $expression the expression used for ordering the results
+     * @param string $lang language
+     * @return string sparql order by clause
+     */
+    private function formatOrderBy($expression, $lang) {
+        if(!$this->model->getConfig()->getCollationEnabled()) {
+            return $expression;
+        }
+        $orderby = sprintf('arq:collation(\'%2$s\', %1$s)', $expression, $lang);
+        return $orderby;
     }
 
     /**
@@ -80,14 +106,16 @@ class JenaTextSparql extends GenericSparql
      * @param integer $limit limits the amount of results
      * @param integer $offset offsets the result set
      * @param array|null $classes
+     * @param boolean $showDeprecated whether to include deprecated concepts in the result (default: false)
+     * @param \EasyRdf\Resource|null $qualifier alphabetical list qualifier resource or null (default: null)
      * @return string sparql query
      */
 
-    public function generateAlphabeticalListQuery($letter, $lang, $limit = null, $offset = null, $classes = null)
+    public function generateAlphabeticalListQuery($letter, $lang, $limit = null, $offset = null, $classes = null, $showDeprecated = false, $qualifier = null)
     {
         if ($letter == '*' || $letter == '0-9' || $letter == '!*') {
             // text index cannot support special character queries, use the generic implementation for these
-            return parent::generateAlphabeticalListQuery($letter, $lang, $limit, $offset, $classes);
+            return parent::generateAlphabeticalListQuery($letter, $lang, $limit, $offset, $classes, $showDeprecated, $qualifier);
         }
 
         $gc = $this->graphClause;
@@ -97,11 +125,20 @@ class JenaTextSparql extends GenericSparql
 
         # make text query clause
         $lcletter = mb_strtolower($letter, 'UTF-8'); // convert to lower case, UTF-8 safe
-        $textcondPref = $this->createTextQueryCondition($letter . '*', 'skos:prefLabel', $lang);
-        $textcondAlt = $this->createTextQueryCondition($letter . '*', 'skos:altLabel', $lang);
+        $langClause = $this->generateLangClause($lang);
+        $textcondPref = $this->createTextQueryCondition($letter . '*', 'skos:prefLabel', $langClause);
+        $textcondAlt = $this->createTextQueryCondition($letter . '*', 'skos:altLabel', $langClause);
+        $orderbyclause = $this->formatOrderBy("LCASE(?match)", $lang) . " STR(?s) LCASE(STR(?qualifier))";
+
+        $qualifierClause = $qualifier ? "OPTIONAL { ?s <" . $qualifier->getURI() . "> ?qualifier }" : "";
+
+        $filterDeprecated="";
+        if(!$showDeprecated){
+            $filterDeprecated="FILTER NOT EXISTS { ?s owl:deprecated true }";
+        }
 
         $query = <<<EOQ
-SELECT DISTINCT ?s ?label ?alabel
+SELECT DISTINCT ?s ?label ?alabel ?qualifier
 WHERE {
   $gc {
     {
@@ -122,10 +159,11 @@ WHERE {
       }
     }
     ?s a ?type .
-    FILTER NOT EXISTS { ?s owl:deprecated true }
+    $qualifierClause
+    $filterDeprecated
   } $values
 }
-ORDER BY LCASE(?match) $limitandoffset
+ORDER BY $orderbyclause $limitandoffset
 EOQ;
         return $query;
     }

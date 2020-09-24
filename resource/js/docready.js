@@ -41,7 +41,7 @@ $(function() { // DOCUMENT READY
         });
         return removeThese.join(' ');
       });
-      if (settings.url.indexOf('index/' !== -1)) {
+      if (settings.url.indexOf('index/') !== -1) {
         $(".sidebar-grey").mCustomScrollbar({
           alwaysShowScrollbar: 1,
           scrollInertia: 0,
@@ -70,9 +70,21 @@ $(function() { // DOCUMENT READY
     if (settings.url.indexOf('search') !== -1 && $autocomplete.length > 0 && $autocomplete[0].offsetHeight === 302) {
       $(".tt-dropdown-menu").mCustomScrollbar({ alwaysShowScrollbar: 1, scrollInertia: 0 });
     }
+
+    $('.reified-property-value').each(function() {
+      $(this).qtip({
+        content: $(this).next('.reified-tooltip'),
+        position: { my: 'top left', at: 'top left' },
+        style: { classes: 'qtip-skosmos' },
+        show: { delay: 100 },
+        hide: { fixed: true, delay: 400 }
+      });
+    });
+
     countAndSetOffset();
 
     hideCrumbs();
+    hidePropertyValues();
   });
 
   // if the hierarchy tab is active filling the jstree with data
@@ -83,8 +95,8 @@ $(function() { // DOCUMENT READY
   countAndSetOffset();
 
   // Make a selection of an element for copy pasting.
-  function makeSelection() {
-    var $clicked = $(this);
+  function makeSelection(e, elem) {
+    var $clicked = elem || $(this);
     var text = $clicked[0];
     var range;
     if (document.body.createTextRange) { // ms
@@ -115,6 +127,17 @@ $(function() { // DOCUMENT READY
   }
 
   $(document).on('click','.uri-input-box', makeSelection);
+
+  // copy to clipboard
+  function copyToClipboard() {
+    var $btn = $(this);
+    var id = $btn.attr('for');
+    var $elem = $(id);
+    makeSelection(undefined, $elem);
+    document.execCommand('copy');
+  }
+
+  $(document).on('click', 'button.copy-clipboard', copyToClipboard);
 
   var sidebarResizer = debounce(function() {
     countAndSetOffset();
@@ -166,6 +189,17 @@ $(function() { // DOCUMENT READY
   );
 
   hideCrumbs();
+
+  // event handling restoring the hidden breadcrumb paths
+  $(document).on('click', '.restore-propvals',
+      function(){
+        $(this).parent().parent().addClass('expand-propvals');
+        $(this).remove();
+        return false;
+      }
+  );
+
+  hidePropertyValues();
 
   // ajaxing the concept count and the preflabel counts on the vocabulary front page
   if ($('#vocab-info').length && $('#statistics').length) {
@@ -225,8 +259,24 @@ $(function() { // DOCUMENT READY
   var $delayedSpinner = $("<p class='concept-spinner center-block'>" + loading_text + "&hellip;</p>");
 
   // adds a delay before showing the spinner configured above
-  function delaySpinner(loading) {
-    loading = setTimeout(function() { $('.concept-spinner').show() }, 500);
+  function delaySpinner() {
+    return setTimeout(function() { $('.concept-spinner').show() }, 500);
+  }
+
+  function ajaxConceptMapping(data) {
+    // ajaxing the concept mapping properties on the concept page
+    var $conceptAppendix = $('.concept-appendix');
+    if ($conceptAppendix.length) {
+      var concept = {
+        uri: $conceptAppendix.data('concept-uri'),
+        type: $conceptAppendix.data('concept-type')
+      };
+
+      // Defined in scripts.js. Will load the mapping properties via Ajax request to JSKOS REST service, and render them.
+      loadMappingProperties(concept, lang, clang, $conceptAppendix, data);
+    } else {
+      makeCallbacks(data);
+    }
   }
 
   // event handler for clicking the hierarchy concepts
@@ -238,20 +288,21 @@ $(function() { // DOCUMENT READY
         var historyUrl = (clang !== lang) ? targetUrl + '?' + parameters : targetUrl;
         $('#hier-trigger').attr('href', targetUrl);
         var $content = $('.content').empty().append($delayedSpinner.hide());
-        var loading;
+        var loading = delaySpinner();
         $.ajax({
             url : targetUrl,
             data: parameters,
-            beforeSend: delaySpinner(loading),
-            complete: clearTimeout(loading),
+            complete: function() { clearTimeout(loading); },
             success : function(data) {
               $content.empty();
               var response = $('.content', data).html();
               if (window.history.pushState) { window.history.pushState({url: historyUrl}, '', historyUrl); }
               $content.append(response);
+
+              updateJsonLD(data);
               updateTitle(data);
               updateTopbarLang(data);
-              makeCallbacks(data);
+              ajaxConceptMapping(data);
               // take the content language buttons from the response
               $('.header-float .dropdown-menu').empty().append($('.header-float .dropdown-menu', data).html());
             }
@@ -267,19 +318,19 @@ $(function() { // DOCUMENT READY
         $('.activated-concept').removeClass('activated-concept');
         $(this).addClass('activated-concept');
         var $content = $('.content').empty().append($delayedSpinner.hide());
-        var loading;
+        var loading = delaySpinner();
         $.ajax({
             url : event.target.href,
-            beforeSend: delaySpinner(loading),
-            complete: clearTimeout(loading),
+            complete: function() { clearTimeout(loading); },
             success : function(data) {
               if (window.history.pushState) { window.history.pushState({}, null, event.target.href); }
               $content.empty().append($('.content', data).html());
               initHierarchyQtip();
               $('#hier-trigger').attr('href', event.target.href);
+              updateJsonLD(data);
               updateTitle(data);
               updateTopbarLang(data);
-              makeCallbacks(data);
+              ajaxConceptMapping(data);
               // take the content language buttons from the response
               $('.header-float .dropdown-menu').empty().append($('.header-float .dropdown-menu', data).html());
             }
@@ -294,6 +345,7 @@ $(function() { // DOCUMENT READY
         $.ajaxQ.abortAll();
         $('.active').removeClass('active');
         $('#alpha').addClass('active');
+        alpha_complete = false;
         $('.sidebar-grey').empty().prepend(spinner);
         var targetUrl = event.target.href;
         $.ajax({
@@ -361,7 +413,9 @@ $(function() { // DOCUMENT READY
         return false;
       }
       var uri = $('.uri-input-box').html();
-      var redirectUrl = vocab + '/' + lang + '/page/?uri=' + uri;
+      var base_href = $('base').attr('href'); // see #315, #633
+      var clangIfSet = clang !== lang ? "&clang=" + clang : ""; // see #714
+      var redirectUrl = base_href + vocab + '/' + lang + '/page/?uri=' + uri + clangIfSet;
       window.location.replace(encodeURI(redirectUrl));
       return false;
     }
@@ -389,12 +443,10 @@ $(function() { // DOCUMENT READY
   $(document).on('click','div.group-hierarchy a',
       function(event) {
         var $content = $('.content').empty().append($delayedSpinner.hide());
-        var loading;
+        var loading = delaySpinner();
         // ajaxing the sidebar content
         $.ajax({
             url : event.target.href,
-            beforeSend: delaySpinner(loading),
-            complete: clearTimeout(loading),
             success : function(data) {
               initHierarchyQtip();
               $('#hier-trigger').attr('href', event.target.href);
@@ -404,7 +456,7 @@ $(function() { // DOCUMENT READY
               $('.nav').scrollTop(0);
               if (window.history.pushState) { window.history.pushState({}, null, event.target.href); }
               updateTitle(data);
-              makeCallbacks(data);
+              ajaxConceptMapping(data);
               // take the content language buttons from the response
               $('.header-float .dropdown-menu').empty().append($('.header-float .dropdown-menu', data).html());
             }
@@ -503,7 +555,7 @@ $(function() { // DOCUMENT READY
   } else if (!search_lang) {
       langPretty = $('a[hreflang=' + lang + ']').html();
       search_lang = lang;
-      if (!langPretty) { langPretty = $('a[hreflang="anything"]').html(); }
+      if (!langPretty) { langPretty = $('.lang-button-all').html(); }
       $('#lang-dropdown-toggle').html(langPretty + ' <span class="caret"></span>');
       qlang = lang;
   } else {
@@ -518,7 +570,7 @@ $(function() { // DOCUMENT READY
   });
 
   if (!search_lang_possible && search_lang !== 'anything') {
-    langPretty = $('a[hreflang=""]').html();
+    langPretty = $('.lang-button-all').html();
     $('#lang-dropdown-toggle').html(langPretty + ' <span class="caret"></span>');
     qlang = '';
     createCookie('SKOSMOS_SEARCH_LANG', qlang, 365);
@@ -619,7 +671,6 @@ $(function() { // DOCUMENT READY
       },
       ajax: {
         beforeSend: function(jqXHR, settings) {
-          wildcard = ($('#search-field').val().indexOf('*') === -1) ? '*' : '';
           var vocabString = $('.frontpage').length ? vocabSelectionString : vocab;
           var parameters = $.param({'vocab' : vocabString, 'lang' : qlang, 'labellang' : qlang});
           // if the search has been targeted at all languages by clicking the checkbox
@@ -637,6 +688,11 @@ $(function() { // DOCUMENT READY
             var hit = data.results[i];
             if (!hit.hiddenLabel) {
                 hasNonHiddenMatch[hit.uri] = true;
+            } else if (hit.hiddenLabel) {
+                if (hasNonHiddenMatch[hit.uri]) {
+                    data.results.splice(i, 1);
+                }
+                hasNonHiddenMatch[hit.uri] = false;
             }
         }
         var context = data['@context'];
@@ -722,6 +778,16 @@ $(function() { // DOCUMENT READY
         $('.clear-search').addClass('clear-search-dark');
       }
     });
+
+    // monkey-patching TypeAhead's Dropdown object for: https://github.com/NatLibFi/Skosmos/issues/773
+    // Updating typeahead.js to 0.11 requires a few changes that are not really complicated.
+    // However, our dropdown style is broken, and it appears hard to be fixed. typeahead.js
+    // Also does not appear to be maintained, so this temporary fix will prevent
+    // accidental selection of values. TODO: we must fix this in a future release, possibly
+    // using another library.
+    var typeaheadInstance = $typeahead.data("ttTypeahead");
+    typeaheadInstance.dropdown.$menu.off("mouseenter.tt", ".tt-suggestion");
+    typeaheadInstance.dropdown.$menu.off("mouseleave.tt", ".tt-suggestion");
   }
 
   // storing the search input before autocompletion changes it
@@ -743,7 +809,7 @@ $(function() { // DOCUMENT READY
       var emailMessageVal = $("#message").val();
       var emailAddress = $("#email").val();
       var requiredFields = true;
-      if (emailAddress === '' || emailAddress.indexOf('@') === -1) {
+      if (emailAddress !== '' && emailAddress.indexOf('@') === -1) {
         $("#email").addClass('missing-value');
         requiredFields = false;
       }
@@ -779,7 +845,7 @@ $(function() { // DOCUMENT READY
       alpha_complete = true;
       $('.alphabetical-search-results').append($loading);
       var parameters = $.param({'offset' : 250, 'clang': content_lang});
-      var letter = '/' + $('.pagination > .active > a')[0].innerHTML;
+      var letter = '/' + ($('.pagination > .active')[0] ? $('.pagination > .active > a')[0].innerHTML : $('.pagination > li > a')[0].innerHTML);
       $.ajax({
         url : vocab + '/' + lang + '/index' + letter,
         data : parameters,
@@ -903,7 +969,7 @@ $(function() { // DOCUMENT READY
       } else if (selectedVocabs[vocabId] !== undefined) {
         delete selectedVocabs[vocabId];
       }
-      this.vocabSelectionString = updateVocabParam();
+      updateVocabParam();
     },
     maxHeight: 300
   });
@@ -1006,11 +1072,7 @@ $(function() { // DOCUMENT READY
     });
 
     $('#parent-limit').focus(function() {
-      if($('#parent-limit').attr('data-uri') !== '') {
-        parentLimitReady = true;
-      } else {
-        parentLimitReady = false;
-      }
+      parentLimitReady = $('#parent-limit').attr('data-uri') !== '';
     });
 
     $(document).on('submit', '.search-options', function() {
@@ -1055,6 +1117,18 @@ $(function() { // DOCUMENT READY
     })});
   }
 
-  makeCallbacks();
+  // ajaxing the concept mapping properties on the concept page
+  var $conceptAppendix = $('.concept-appendix');
+  if ($conceptAppendix.length) {
+    var concept = {
+      uri: $conceptAppendix.data('concept-uri'),
+      type: $conceptAppendix.data('concept-type')
+    };
+
+    // Defined in scripts.js. Will load the mapping properties via Ajax request to JSKOS REST service, and render them.
+    loadMappingProperties(concept, lang, clang, $conceptAppendix, null);
+  } else {
+    makeCallbacks();
+  }
 
 });

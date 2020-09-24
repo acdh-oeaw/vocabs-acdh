@@ -111,9 +111,9 @@
               {% endif %}
               <li>
               {% if value.altLabel %}
-              <span class="replaced">{{ value.altLabel }}</span>	&rarr; <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}</a>
+              <span class="replaced">{{ value.altLabel }}</span>	&rarr; <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}{% if value.qualifier %} ({{ value.qualifier }}){% endif %}</a>
               {% else %}
-              <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}</a>
+              <a href="{{ value.uri | link_url(vocab,request.lang,'page',request.contentLang) }}">{{ value.prefLabel }}{% if value.qualifier %} ({{ value.qualifier }}){% endif %}</a>
               {% endif %}
              </li>
               {% endfor %}
@@ -127,9 +127,8 @@
           <div class="input-group">
             <span class="versal">{% trans "By scheme" %}</span>
             <select id="scheme-limit" value="{{ limit-scheme }}" class="form-control multiselect" multiple="multiple">
-              <option></option>
               {% for uri,scheme in conceptSchemes %}
-                <option value="{{ uri }}">{% if scheme.label %}{{ scheme.label }}{% else %}{{ uri|trans }}{% endif %}</option>
+                <option value="{{ uri }}">{% if scheme.prefLabel %}{{ scheme.prefLabel }}{% elseif scheme.label %}{{ scheme.label }}{% elseif scheme.title %}{{ scheme.title }}{% else %}{{ uri|trans }}{% endif %}</option>
               {% endfor %}
             </select>
           </div>
@@ -138,7 +137,6 @@
           <div class="input-group">
             <span class="versal">{% trans "By type" %}</span>
             <select id="type-limit" value="{{ limit-type }}" class="form-control multiselect" multiple="multiple">
-              <option></option>
               {% for uri,type in types %}
                 <option value="{{ uri }}">{% if type.label %}{{ type.label }}{% else %}{{ uri|trans }}{% endif %}</option>
               {% endfor %}
