@@ -112,6 +112,20 @@ class Controller
         $port = filter_input(INPUT_SERVER, 'SERVER_PORT', FILTER_SANITIZE_STRING);
         $disp_port = ($port == 80 || $port == 443) ? '' : ":$port";
         $domain = filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING);
+        // 2020-09-29 kil #18251: handling proxy server at acdh-ch for using the requested domain
+        //   using HTTP_X_FORWARDED_HOST, this works at our servers, not sure, if it works with other proxy-servers
+        $proxy_forwarded = filter_input(INPUT_SERVER, 'HTTP_X_FORWARDED_HOST', FILTER_SANITIZE_STRING);
+        if (!empty($proxy_forwarded))
+        {
+            // then there is probably a proxy in place at least at acdh-ch
+            // it tells us the domain that is proxied and the domain where it runs behind the proxy
+            // we need the domain that is proxied that is the first value (delimiter is comma)
+            $proxy_path = explode(',', $proxy_forwarded);
+            if (isset($proxy_path[0]) && !empty(trim($proxy_path[0]))) {
+                // use the proxy request domain
+                $domain = trim($proxy_path[0]);
+            }
+        }
         return "$protocol://{$domain}{$disp_port}{$base_url}";
     }
 
