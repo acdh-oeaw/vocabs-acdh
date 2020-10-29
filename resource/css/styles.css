@@ -803,8 +803,8 @@ span.xl-pref-label > img {
  ***************************/
 
 #sidebar {
-  height: 100%;
-  position: absolute;
+  height: calc(100% - 10px) !important;
+  position: absolute !important;
   width: 320px;
 }
 
