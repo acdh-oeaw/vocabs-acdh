@@ -169,7 +169,7 @@
       {% if request.vocabid == '' and request.page != 'feedback' and request.page != 'about' and request.page != 'impressum' and not global_search %}
         {% include 'vocabularylist.twig' %}
       {% endif %}
-      <div class="{% if global_search %}global-{% elseif request.page == 'vocab' and not request.vocab.config.showAlphabeticalIndex and not request.vocab.config.showTopConcepts and not request.vocab.config.showChangeList %}wide-{% endif %}content">
+      <div class="{% if global_search %}global-{% elseif request.page == 'vocab' and not request.vocab.config.showAlphabeticalIndex and not request.vocab.config.showTopConcepts and not request.vocab.config.showChangeList and not request.vocab.config.showHierarchy %}wide-{% endif %}content">
       {% block content %}
       {% endblock %}
       </div>
