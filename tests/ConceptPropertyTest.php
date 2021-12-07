@@ -4,7 +4,8 @@ class ConceptPropertyTest extends PHPUnit\Framework\TestCase
 {
   private $model;
 
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -122,12 +123,52 @@ class ConceptPropertyTest extends PHPUnit\Framework\TestCase
    * @covers ConceptProperty::addValue
    * @covers ConceptProperty::sortValues
    */
-  public function testSortNotatedValues() {
+  public function testSortNotatedValuesLexical() {
+    # the vocabulary is configured to use lexical sorting
     $vocab = $this->model->getVocabulary('test-notation-sort');
     $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta01', 'en');
     $concept = $concepts[0];
     $props = $concept->getProperties();
-    $expected = array("test:ta0112", "test:ta0119", "test:ta0117", "test:ta0116", "test:ta0114","test:ta0115","test:ta0113", "test:ta0120", "test:ta0111", );
+    $expected = array(
+      "test:ta0111", # 33.01
+      "test:ta0116", # 33.02
+      "test:ta0112", # 33.1
+      "test:ta0114", # 33.10
+      "test:ta0115", # 33.2
+      "test:ta0117", # 33.9
+      "test:ta0119", # 33.90
+      "test:ta0120", # K2
+      "test:ta0113"  # concept not defined, no notation code
+    );
+    $ret = array();
+
+    foreach($props['skos:narrower']->getValues() as $val) {
+        $ret[] = EasyRdf\RdfNamespace::shorten($val->getUri());
+    }
+    $this->assertEquals($expected, $ret);
+  }
+
+  /**
+   * @covers ConceptProperty::addValue
+   * @covers ConceptProperty::sortValues
+   */
+  public function testSortNotatedValuesNatural() {
+    # the vocabulary is configured to use natural sorting
+    $vocab = $this->model->getVocabulary('testNotation');
+    $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta01', 'en');
+    $concept = $concepts[0];
+    $props = $concept->getProperties();
+    $expected = array(
+      "test:ta0111", # 33.01
+      "test:ta0116", # 33.02
+      "test:ta0112", # 33.1
+      "test:ta0115", # 33.2
+      "test:ta0117", # 33.9
+      "test:ta0114", # 33.10
+      "test:ta0119", # 33.90
+      "test:ta0120", # K2
+      "test:ta0113"  # concept not defined, no notation code
+    );
     $ret = array();
 
     foreach($props['skos:narrower']->getValues() as $val) {
@@ -147,4 +188,23 @@ class ConceptPropertyTest extends PHPUnit\Framework\TestCase
     $props = $concept->getProperties();
     $this->assertEquals('skos:hiddenLabel', $props['subclass:prop1']->getSubPropertyOf());
   }
+
+  /**
+   * @covers ConceptProperty::getID
+   */
+  public function testGetIDShortenedURI()
+  {
+    $prop = new ConceptProperty('skosmos:testLabel', 'Test label');
+    $this->assertEquals('skosmos_testLabel', $prop->getID());
+  }
+
+  /**
+   * @covers ConceptProperty::getID
+   */
+  public function testGetIDFullURI()
+  {
+    $prop = new ConceptProperty('http://rdaregistry.info/Elements/a/P50008', 'has hierarchical superior');
+    $this->assertEquals('http___rdaregistry_info_Elements_a_P50008', $prop->getID());
+  }
+
 }

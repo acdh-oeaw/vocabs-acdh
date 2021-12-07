@@ -62,6 +62,14 @@ class ConceptProperty
     }
 
     /**
+     * Returns an alphanumeric ID for the property, suitable for use as a CSS identifier.
+     */
+    public function getID()
+    {
+        return preg_replace('/[^A-Za-z0-9-]/', '_', $this->prop);
+    }
+
+    /**
      * Returns text for the property tooltip.
      * @return string
      */
@@ -122,8 +130,12 @@ class ConceptProperty
                         return -1;
                     }
                     else {
-                        // assume that notations are unique
-                        return strnatcasecmp($anot, $bnot);
+                        // assume that notations are unique, choose strategy
+                        if ($this->sort_by_notation == "lexical") {
+                            return strcoll($anot, $bnot);
+                        } else { // natural
+                            return strnatcasecmp($anot, $bnot);
+                        }
                     }
                 });
             }

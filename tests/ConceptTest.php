@@ -10,7 +10,8 @@ class ConceptTest extends PHPUnit\Framework\TestCase
   private $cbdVocab;
   private $cbdGraph;
 
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -175,7 +176,7 @@ class ConceptTest extends PHPUnit\Framework\TestCase
   {
     $props = $this->concept->getProperties();
 
-    $this->assertEquals(6, sizeof($props));
+    $this->assertEquals(9, sizeof($props));
   }
 
   /**
@@ -188,7 +189,9 @@ class ConceptTest extends PHPUnit\Framework\TestCase
   public function testGetPropertiesCorrectOrderOfProperties()
   {
     $props = $this->concept->getProperties();
-    $expected = array (0 => 'rdf:type', 1=> 'skos:broader',2 => 'skos:narrower',3 => 'skos:altLabel',4 => 'skos:scopeNote',5 => 'http://www.skosmos.skos/testprop');
+    $expected = array (0 => 'rdf:type', 1 => 'skos:broader', 2 => 'skos:narrower', 3 => 'skos:altLabel',
+        4 => 'skos:scopeNote', 5 => 'http://www.skosmos.skos/multiLingOff', 6 => 'http://www.skosmos.skos/multiLingOn',
+        7 => 'http://www.skosmos.skos/testprop', 8 => 'skos:notation');
     $this->assertEquals($expected, array_keys($props));
 
   }
@@ -283,7 +286,7 @@ class ConceptTest extends PHPUnit\Framework\TestCase
     $concepts = $vocab->getConceptInfo("http://www.skosmos.skos/test/ta123", "en");
     $concept = $concepts[0];
     $date = $concept->getDate();
-    $this->assertContains('10/1/14', $date);
+    $this->assertStringContainsString('10/1/14', $date);
   }
 
   /**
@@ -294,8 +297,8 @@ class ConceptTest extends PHPUnit\Framework\TestCase
     $concepts = $vocab->getConceptInfo("http://www.skosmos.skos/date/d1", "en");
     $concept = $concepts[0];
     $date = $concept->getDate();
-    $this->assertContains('1/3/00', $date);
-    $this->assertContains('6/6/12', $date);
+    $this->assertStringContainsString('1/3/00', $date);
+    $this->assertStringContainsString('6/6/12', $date);
   }
 
   /**
@@ -323,7 +326,7 @@ class ConceptTest extends PHPUnit\Framework\TestCase
     $concept = $concepts[0];
     # we use @ to suppress the exceptions in order to be able to check the result
     $date = @$concept->getDate();
-    $this->assertContains('1986-21-00', $date);
+    $this->assertStringContainsString('1986-21-00', $date);
   }
 
   /**
@@ -464,6 +467,74 @@ class ConceptTest extends PHPUnit\Framework\TestCase
   /**
    * @covers Concept::getProperties
    */
+  public function testMultilingualPropertiesOnWithLangHit() {
+    $vocab = $this->model->getVocabulary('test');
+    $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta112', 'en');
+    $concept = $concepts[0];
+    $props = $concept->getProperties();
+    $propvals = $props['http://www.skosmos.skos/multiLingOn']->getValues();
+    $runner = array();
+    foreach ($propvals as $propval) {
+      array_push($runner, $propval->getLabel());
+    }
+    $compareableArray = ['English', 'Finnish', 'Without lang tag'];
+    $this->assertSame($runner, $compareableArray);
+  }
+
+  /**
+   * @covers Concept::getProperties
+   */
+  public function testMultilingualPropertiesOnWithoutLangHit() {
+    $vocab = $this->model->getVocabulary('test');
+    $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta112', 'ru');
+    $concept = $concepts[0];
+    $props = $concept->getProperties();
+    $propvals = $props['http://www.skosmos.skos/multiLingOn']->getValues();
+    $runner = array();
+    foreach ($propvals as $propval) {
+      array_push($runner, $propval->getLabel());
+    }
+    $compareableArray = ['English', 'Finnish', 'Without lang tag'];
+    $this->assertSame($runner, $compareableArray);
+  }
+
+  /**
+   * @covers Concept::getProperties
+   */
+  public function testMultilingualPropertiesOffWithLangHit() {
+    $vocab = $this->model->getVocabulary('test');
+    $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta112', 'en');
+    $concept = $concepts[0];
+    $props = $concept->getProperties();
+    $propvals = $props['http://www.skosmos.skos/multiLingOff']->getValues();
+    $runner = array();
+    foreach ($propvals as $propval) {
+      array_push($runner, $propval->getLabel());
+    }
+    $compareableArray = ['English', 'Without lang tag'];
+    $this->assertSame($runner, $compareableArray);
+  }
+
+  /**
+   * @covers Concept::getProperties
+   */
+  public function testMultilingualPropertiesOffWithoutLangHit() {
+    $vocab = $this->model->getVocabulary('test');
+    $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta112', 'ru');
+    $concept = $concepts[0];
+    $props = $concept->getProperties();
+    $propvals = $props['http://www.skosmos.skos/multiLingOff']->getValues();
+    $runner = array();
+    foreach ($propvals as $propval) {
+      array_push($runner, $propval->getLabel());
+    }
+    $compareableArray = ['Without lang tag'];
+    $this->assertSame($runner, $compareableArray);
+  }
+
+  /**
+   * @covers Concept::getProperties
+   */
   public function testGetPropertiesDefinitionLiteral() {
     $vocab = $this->model->getVocabulary('test');
     $concepts = $vocab->getConceptInfo('http://www.skosmos.skos/test/ta115', 'en');
@@ -515,9 +586,9 @@ class ConceptTest extends PHPUnit\Framework\TestCase
 
     $concept->processExternalResource($res);
     $json =  $concept->dumpJsonLd();
-    $this->assertContains('HY', $json);
-    $this->assertContains('AK', $json);
-    $this->assertContains('OS', $json);
+    $this->assertStringContainsString('HY', $json);
+    $this->assertStringContainsString('AK', $json);
+    $this->assertStringContainsString('OS', $json);
     $contains_count = substr_count($json, "CONTAINS");
     $this->assertEquals($contains_count, 3);
   }

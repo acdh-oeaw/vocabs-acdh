@@ -5,6 +5,8 @@
  */
 EasyRdf\RdfNamespace::set('skosmos', 'http://purl.org/net/skosmos#');
 EasyRdf\RdfNamespace::set('skosext', 'http://purl.org/finnonto/schema/skosext#');
+EasyRdf\RdfNamespace::delete('geo');
+EasyRdf\RdfNamespace::set('wgs84', 'http://www.w3.org/2003/01/geo/wgs84_pos#');
 EasyRdf\RdfNamespace::set('isothes', 'http://purl.org/iso25964/skos-thes#');
 EasyRdf\RdfNamespace::set('mads', 'http://www.loc.gov/mads/rdf/v1#');
 EasyRdf\RdfNamespace::set('wd', 'http://www.wikidata.org/entity/');
@@ -187,6 +189,8 @@ class GlobalConfig extends BaseConfig {
         $endpoint = $this->resource->get('skosmos:sparqlEndpoint');
         if ($endpoint) {
             return $endpoint->getUri();
+        } elseif (getenv('SKOSMOS_SPARQL_ENDPOINT')) {
+            return getenv('SKOSMOS_SPARQL_ENDPOINT');
         } else {
             return 'http://localhost:3030/ds/sparql';
         }

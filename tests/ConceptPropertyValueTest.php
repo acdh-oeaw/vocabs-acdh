@@ -6,7 +6,8 @@ class ConceptPropertyValueTest extends PHPUnit\Framework\TestCase
   private $concept;
   private $vocab;
 
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -94,7 +95,7 @@ class ConceptPropertyValueTest extends PHPUnit\Framework\TestCase
   public function testGetVocabName() {
     $props = $this->concept->getProperties();
     $propvals = $props['skos:narrower']->getValues();
-    $this->assertEquals('Test ontology', $propvals['Crucian carp http://www.skosmos.skos/test/ta121']->getVocabName());
+    $this->assertEquals('Test short', $propvals['Crucian carp http://www.skosmos.skos/test/ta121']->getVocabName());
   }
 
   /**
@@ -127,44 +128,6 @@ class ConceptPropertyValueTest extends PHPUnit\Framework\TestCase
     $props = $concept->getProperties();
     $propvals = $props['skos:broader']->getValues();
     $this->assertEquals('Carp', (string)$propvals['665 Carp http://www.skosmos.skos/test/ta112']);
-  }
-
-  /**
-   * @covers ConceptPropertyValue::__toString
-   */
-  public function testToStringWithNotation() {
-    $mockres = $this->getMockBuilder('EasyRdf\\Resource')->disableOriginalConstructor()->getMock();
-    $mockvoc = $this->getMockBuilder('Vocabulary')->disableOriginalConstructor()->getMock();
-    $mockconf = $this->getMockBuilder('VocabularyConfig')->disableOriginalConstructor()->getMock();
-    $mocklit = $this->getMockBuilder('EasyRdf\\Literal')->disableOriginalConstructor()->getMock();
-    $mocklit->method('getValue')->will($this->returnValue('T3ST'));
-    $mockconf->method('sortByNotation')->will($this->returnValue(true));
-    $mockconf->method('showNotation')->will($this->returnValue(true));
-    $mockvoc->method('getConfig')->will($this->returnValue($mockconf));
-    $mockres->method('label')->will($this->returnValue('Term label'));
-    $mockres->method('get')->will($this->returnValue($mocklit));
-    $mockres->method('getUri')->will($this->returnValue('http://thisdoesntexistatalland.sefsf/2j2h4/'));
-    $propval = new ConceptPropertyValue($this->model, $mockvoc, $mockres, null);
-    $this->assertEquals('T3ST Term label', (string)$propval);
-  }
-
-  /**
-   * @covers ConceptPropertyValue::__toString
-   */
-  public function testToStringWhenNotationExistsButIsConfiguredOff() {
-    $mockres = $this->getMockBuilder('EasyRdf\\Resource')->disableOriginalConstructor()->getMock();
-    $mockvoc = $this->getMockBuilder('Vocabulary')->disableOriginalConstructor()->getMock();
-    $mockconf = $this->getMockBuilder('VocabularyConfig')->disableOriginalConstructor()->getMock();
-    $mocklit = $this->getMockBuilder('EasyRdf\\Literal')->disableOriginalConstructor()->getMock();
-    $mocklit->method('getValue')->will($this->returnValue('T3ST'));
-    $mockconf->method('sortByNotation')->will($this->returnValue(true));
-    $mockconf->method('showNotation')->will($this->returnValue(false));
-    $mockvoc->method('getConfig')->will($this->returnValue($mockconf));
-    $mockres->method('label')->will($this->returnValue('Term label'));
-    $mockres->method('get')->will($this->returnValue($mocklit));
-    $mockres->method('getUri')->will($this->returnValue('http://thisdoesntexistatalland.sefsf/2j2h4/'));
-    $propval = new ConceptPropertyValue($this->model, $mockvoc, $mockres, null);
-    $this->assertEquals('Term label', (string)$propval);
   }
 
   /**
@@ -213,6 +176,6 @@ class ConceptPropertyValueTest extends PHPUnit\Framework\TestCase
     $vals = $props['skos:definition']->getValues();
     $val = reset($vals);
     $reified_vals = $val->getReifiedPropertyValues();
-    $this->assertEquals(2, count($reified_vals));
+    $this->assertCount(2, $reified_vals);
   }
 }

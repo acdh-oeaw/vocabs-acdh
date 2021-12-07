@@ -69,6 +69,50 @@ class VocabularyConfig extends BaseConfig
     }
 
     /**
+     * Get the SPARQL endpoint URL for this vocabulary
+     *
+     * @return string|null endpoint URL, or null if not set
+     */
+    public function getSparqlEndpoint()
+    {
+        $endpoint = $this->resource->get('void:sparqlEndpoint');
+        if ($endpoint) {
+            return $endpoint->getUri();
+        }
+        return null;
+    }
+
+    /**
+     * Get the SPARQL graph URI for this vocabulary
+     *
+     * @return string|null graph URI, or null if not set
+     */
+    public function getSparqlGraph()
+    {
+        $graph = $this->resource->get('skosmos:sparqlGraph');
+        if ($graph) {
+            $graph = $graph->getUri();
+        }
+
+        return $graph;
+    }
+
+    /**
+     * Get the SPARQL dialect for this vocabulary
+     *
+     * @return string|null dialect name
+     */
+    public function getSparqlDialect()
+    {
+        $dialect = $this->resource->get('skosmos:sparqlDialect');
+        if ($dialect) {
+            $dialect = $dialect->getValue();
+        }
+
+        return $dialect;
+    }
+
+    /**
      * Get the default language of this vocabulary
      * @return string default language, e.g. 'en'
      */
@@ -134,12 +178,22 @@ class VocabularyConfig extends BaseConfig
     }
 
     /**
-     * Returns a boolean value set in the config.ttl config.
-     * @return boolean
+     * Returns the sorting strategy for notation codes set in the config.ttl
+     * config: either "lexical", "natural", or null if sorting by notations is 
+     * disabled. A "true" value in the configuration file is interpreted as
+     * "lexical".
+     * @return string|bool
      */
-    public function sortByNotation()
+    public function getSortByNotation(): ?string
     {
-        return $this->getBoolean('skosmos:sortByNotation');
+        $value = $this->getLiteral('skosmos:sortByNotation');
+        if ($value == "lexical" || $value == "natural") {
+            return $value;
+        }
+        // not a special value - interpret as boolean instead
+        $bvalue = $this->getBoolean('skosmos:sortByNotation');
+        // "true" is interpreted as "lexical"
+        return $bvalue ? "lexical" : null;
     }
 
     /**
@@ -248,7 +302,7 @@ class VocabularyConfig extends BaseConfig
 
     /**
      * Returns custom properties displayed on the search page if configured.
-     * @return string array class URI or null
+     * @return array array class URI or null
      */
 
     public function getAdditionalSearchProperties()
@@ -342,6 +396,15 @@ class VocabularyConfig extends BaseConfig
     public function getMarcSourceCode($lang = null)
     {
         return $this->getLiteral('skosmos:marcSourceCode', false, $lang);
+    }
+
+    /**
+     * Returns the boolean value of the skosmos:showNotationAsProperty setting.
+     * @return boolean
+     */
+    public function getShowNotationAsProperty()
+    {
+        return $this->getBoolean('skosmos:showNotationAsProperty', true);
     }
 
     /**
@@ -441,7 +504,7 @@ class VocabularyConfig extends BaseConfig
 
     /**
      * Returns the property/properties used for visualizing concept hierarchies.
-     * @return string array class URI or null
+     * @return array array class URI or null
      */
 
     public function getHierarchyProperty()

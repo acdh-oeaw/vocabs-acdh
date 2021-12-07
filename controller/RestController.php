@@ -160,7 +160,7 @@ class RestController extends Controller
         if ($request->getQueryParam('labellang')) {
             $ret['@context']['@language'] = $request->getQueryParam('labellang');
         } elseif ($request->getQueryParam('lang')) {
-            $ret['@context']['@language'] = $request->getQueryParam('lang');;
+            $ret['@context']['@language'] = $request->getQueryParam('lang');
         }
         return $ret;
     }
@@ -259,7 +259,8 @@ class RestController extends Controller
         $this->setLanguageProperties($request->getLang());
         $arrayClass = $request->getVocab()->getConfig()->getArrayClassURI();
         $groupClass = $request->getVocab()->getConfig()->getGroupClassURI();
-        $vocabStats = $request->getVocab()->getStatistics($request->getQueryParam('lang'), $arrayClass, $groupClass);
+        $queryLang = $request->getQueryParam('lang') ?? $request->getLang();
+        $vocabStats = $request->getVocab()->getStatistics($queryLang, $arrayClass, $groupClass);
         $types = array('http://www.w3.org/2004/02/skos/core#Concept', 'http://www.w3.org/2004/02/skos/core#Collection', $arrayClass, $groupClass);
         $subTypes = array();
         foreach ($vocabStats as $subtype) {
@@ -291,7 +292,8 @@ class RestController extends Controller
             'concepts' => array(
                 'class' => 'http://www.w3.org/2004/02/skos/core#Concept',
                 'label' => gettext('skos:Concept'),
-                'count' => $vocabStats['http://www.w3.org/2004/02/skos/core#Concept']['count'],
+                'count' => isset($vocabStats['http://www.w3.org/2004/02/skos/core#Concept']) ? $vocabStats['http://www.w3.org/2004/02/skos/core#Concept']['count'] : 0,
+                'deprecatedCount' => isset($vocabStats['http://www.w3.org/2004/02/skos/core#Concept']) ? $vocabStats['http://www.w3.org/2004/02/skos/core#Concept']['deprecatedCount'] : 0,
             ),
             'subTypes' => $subTypes,
         );
@@ -301,18 +303,22 @@ class RestController extends Controller
                 'class' => 'http://www.w3.org/2004/02/skos/core#Collection',
                 'label' => gettext('skos:Collection'),
                 'count' => $vocabStats['http://www.w3.org/2004/02/skos/core#Collection']['count'],
+                'deprecatedCount' => $vocabStats['http://www.w3.org/2004/02/skos/core#Collection']['deprecatedCount'],
             );
+
         } else if (isset($vocabStats[$groupClass])) {
             $ret['conceptGroups'] = array(
                 'class' => $groupClass,
                 'label' => isset($vocabStats[$groupClass]['label']) ? $vocabStats[$groupClass]['label'] : gettext(EasyRdf\RdfNamespace::shorten($groupClass)),
                 'count' => $vocabStats[$groupClass]['count'],
+                'deprecatedCount' => $vocabStats[$groupClass]['deprecatedCount'],
             );
         } else if (isset($vocabStats[$arrayClass])) {
             $ret['arrays'] = array(
                 'class' => $arrayClass,
                 'label' => isset($vocabStats[$arrayClass]['label']) ? $vocabStats[$arrayClass]['label'] : gettext(EasyRdf\RdfNamespace::shorten($arrayClass)),
                 'count' => $vocabStats[$arrayClass]['count'],
+                'deprecatedCount' => $vocabStats[$arrayClass]['deprecatedCount'],
             );
         }
 
@@ -425,7 +431,7 @@ class RestController extends Controller
         $hits = array();
         // case 1: exact match on preferred label
         foreach ($results as $res) {
-            if ($res['prefLabel'] == $label) {
+            if (isset($res['prefLabel']) && $res['prefLabel'] == $label) {
                 $hits[] = $res;
             }
         }
@@ -433,7 +439,7 @@ class RestController extends Controller
 
         // case 2: case-insensitive match on preferred label
         foreach ($results as $res) {
-            if (strtolower($res['prefLabel']) == strtolower($label)) {
+            if (isset($res['prefLabel']) && strtolower($res['prefLabel']) == strtolower($label)) {
                 $hits[] = $res;
             }
         }
@@ -442,7 +448,7 @@ class RestController extends Controller
         if ($lang === null) {
             // case 1A: exact match on preferred label in any language
             foreach ($results as $res) {
-                if ($res['matchedPrefLabel'] == $label) {
+                if (isset($res['matchedPrefLabel']) && $res['matchedPrefLabel']  == $label) {
                     $res['prefLabel'] = $res['matchedPrefLabel'];
                     unset($res['matchedPrefLabel']);
                     $hits[] = $res;
@@ -452,7 +458,7 @@ class RestController extends Controller
 
             // case 2A: case-insensitive match on preferred label in any language
             foreach ($results as $res) {
-                if (strtolower($res['matchedPrefLabel']) == strtolower($label)) {
+                if (isset($res['matchedPrefLabel']) && strtolower($res['matchedPrefLabel']) == strtolower($label)) {
                     $res['prefLabel'] = $res['matchedPrefLabel'];
                     unset($res['matchedPrefLabel']);
                     $hits[] = $res;

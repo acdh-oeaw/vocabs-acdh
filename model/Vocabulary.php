@@ -31,7 +31,11 @@ class Vocabulary extends DataObject implements Modifiable
      */
     public function getEndpoint()
     {
-        return $this->resource->get('void:sparqlEndpoint')->getUri();
+        $endpoint = $this->config->getSparqlEndpoint();
+        if ($endpoint === null) {
+            $endpoint = $this->model->getConfig()->getDefaultEndpoint();
+        }
+        return $endpoint;
     }
 
     /**
@@ -41,12 +45,7 @@ class Vocabulary extends DataObject implements Modifiable
      */
     public function getGraph()
     {
-        $graph = $this->resource->get('skosmos:sparqlGraph');
-        if ($graph) {
-            $graph = $graph->getUri();
-        }
-
-        return $graph;
+        return $this->config->getSparqlGraph();
     }
 
     /**
@@ -58,8 +57,7 @@ class Vocabulary extends DataObject implements Modifiable
     {
         $endpoint = $this->getEndpoint();
         $graph = $this->getGraph();
-        $dialect = $this->resource->get('skosmos:sparqlDialect');
-        $dialect = $dialect ? $dialect->getValue() : $this->model->getConfig()->getDefaultSparqlDialect();
+        $dialect = $this->config->getSparqlDialect() ?? $this->model->getConfig()->getDefaultSparqlDialect();
 
         return $this->model->getSparqlImplementation($dialect, $endpoint, $graph);
     }
@@ -157,14 +155,38 @@ class Vocabulary extends DataObject implements Modifiable
             }
         }
 
-        // also include ConceptScheme metadata from SPARQL endpoint
-        $defaultcs = $this->getDefaultConceptScheme();
+        try {
+            // also include ConceptScheme metadata from SPARQL endpoint
+            $defaultcs = $this->getDefaultConceptScheme();
 
-        // query everything the endpoint knows about the ConceptScheme
-        $sparql = $this->getSparql();
-        $result = $sparql->queryConceptScheme($defaultcs);
+            // query everything the endpoint knows about the ConceptScheme
+            $sparql = $this->getSparql();
+            $result = $sparql->queryConceptScheme($defaultcs);
+        } catch (EasyRdf\Http\Exception | EasyRdf\Exception | Throwable $e) {
+             if ($this->model->getConfig()->getLogCaughtExceptions()) {
+                 error_log('Caught exception: ' . $e->getMessage());
+             }
+             return null;
+        }
         $conceptscheme = $result->resource($defaultcs);
-        $this->order = array("dc:title", "dc11:title", "skos:prefLabel", "rdfs:label", "dc:subject", "dc11:subject", "dc:description", "dc11:description", "dc:publisher", "dc11:publisher", "dc:creator", "dc11:creator", "dc:contributor", "dc:language", "dc11:language", "owl:versionInfo", "dc:source", "dc11:source");
+        $this->order = array(
+            "dc:title", "dc11:title", "skos:prefLabel", "rdfs:label",
+            "dc:subject", "dc11:subject",
+            "dc:description", "dc11:description",
+            "foaf:homepage",
+            "dc:publisher", "dc11:publisher",
+            "dc:creator", "dc11:creator",
+            "dc:contributor",
+            "dc:license",
+            "dc:rights", "dc11:rights",
+            "dc:language", "dc11:language",
+            "owl:versionInfo",
+            "dc:source", "dc11:source",
+            "dc:relation", "dc11:relation",
+            "dc:created",
+            "dc:modified",
+            "dc:date", "dc11:date"
+        );
 
         foreach ($conceptscheme->properties() as $prop) {
             foreach ($conceptscheme->allLiterals($prop, $lang) as $val) {
@@ -195,7 +217,7 @@ class Vocabulary extends DataObject implements Modifiable
                 ksort($ret[$prop]);
             }
         }
-        if (isset($ret['owl:versionInfo'])) { // if version info availible for vocabulary convert it to a more readable format
+        if (isset($ret['owl:versionInfo'])) { // if version info available for vocabulary convert it to a more readable format
             $ret['owl:versionInfo'][0] = $this->parseVersionInfo($ret['owl:versionInfo'][0]);
         }
         // remove duplicate values
@@ -227,8 +249,15 @@ class Vocabulary extends DataObject implements Modifiable
         if ($lang === '') {
             $lang = $this->getEnvLang();
         }
-
-        return $this->getSparql()->queryConceptSchemes($lang);
+        $conceptSchemes = null;
+        try {
+            $conceptSchemes = $this->getSparql()->queryConceptSchemes($lang);
+        } catch (EasyRdf\Http\Exception | EasyRdf\Exception | Throwable $e) {
+             if ($this->model->getConfig()->getLogCaughtExceptions()) {
+                 error_log('Caught exception: ' . $e->getMessage());
+             }
+        }
+        return $conceptSchemes;
     }
 
     /**
@@ -303,7 +332,9 @@ class Vocabulary extends DataObject implements Modifiable
 
     /**
      * Counts the statistics of the vocabulary.
-     * @return array of the concept/group counts
+     * @return Array containing the label counts
+     * @param string $array the uri of the concept array class, eg. isothes:ThesaurusArray
+     * @param string $group the uri of the  concept group class, eg. isothes:ConceptGroup
      */
     public function getStatistics($lang = '', $array=null, $group=null)
     {
@@ -418,8 +449,15 @@ class Vocabulary extends DataObject implements Modifiable
     public function getConceptInfo($uri, $clang)
     {
         $sparql = $this->getSparql();
-
-        return $sparql->queryConceptInfo($uri, $this->config->getArrayClassURI(), array($this), $clang);
+        $conceptInfo = null;
+        try {
+            $conceptInfo = $sparql->queryConceptInfo($uri, $this->config->getArrayClassURI(), array($this), $clang);
+        } catch (EasyRdf\Http\Exception | EasyRdf\Exception | Throwable $e) {
+             if ($this->model->getConfig()->getLogCaughtExceptions()) {
+                 error_log('Caught exception: ' . $e->getMessage());
+             }
+        }
+        return $conceptInfo;
     }
 
     /**
