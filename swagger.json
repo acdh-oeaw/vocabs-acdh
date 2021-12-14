@@ -100,14 +100,14 @@
           {
             "name": "maxhits",
             "in": "query",
-            "description": "Maximum number of results to return. If not given, maxhits will default to 100. (default settable in config.ttl)",
+            "description": "Maximum number of results to return. If not given, all results will be returned.",
             "required": false,
             "type": "integer"
           },
           {
             "name": "offset",
             "in": "query",
-            "description": "offset where to start in ther esult set, useful for paging the result. If not given, defaults to 0.",
+            "description": "offset where to start in the result set, useful for paging the result. If not given, defaults to 0.",
             "required": false,
             "type": "integer"
           },
@@ -484,7 +484,7 @@
           {
             "name": "maxhits",
             "in": "query",
-            "description": "Maximum number of results to return. If not given, maxhits will default to 100. (default settable in config.ttl)",
+            "description": "Maximum number of results to return. If not given, all results will be returned.",
             "required": false,
             "type": "integer"
           },
@@ -1457,7 +1457,7 @@
         "uri": {
           "type": "string"
         },
-        "vocabularies": {
+        "results": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/SearchResult"
@@ -1466,7 +1466,7 @@
       },
       "required": [
         "uri",
-        "vocabularies"
+        "results"
       ]
     },
     "SearchResult": {
@@ -1741,11 +1741,17 @@
           "description": "Label of the class"
         },
         "count": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Total number of concepts"
+        },
+        "deprecatedCount": {
+          "type": "integer",
+          "description": "Number of deprecated concepts"
         }
       },
       "required": [
         "count",
+        "deprecatedCount",
         "class"
       ]
     },
@@ -1761,11 +1767,17 @@
           "description": "Label of the type"
         },
         "count": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Total number of concepts by type"
+        },
+        "deprecatedCount": {
+          "type": "integer",
+          "description": "Number of deprecated concepts by type"
         }
       },
       "required": [
         "count",
+        "deprecatedCount",
         "type"
       ]
     },

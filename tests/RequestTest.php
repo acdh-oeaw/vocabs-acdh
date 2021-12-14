@@ -5,7 +5,8 @@ class RequestTest extends PHPUnit\Framework\TestCase
   private $model;
   private $request;
 
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -157,4 +158,11 @@ class RequestTest extends PHPUnit\Framework\TestCase
     $this->assertEquals('index', $this->request->getPage());
   }
 
+  /**
+   * @covers Request::getVersion
+   */
+  public function testGetVersion() {
+    $version = $this->request->getVersion();
+    $this->assertNotEmpty($version);
+  }
 }

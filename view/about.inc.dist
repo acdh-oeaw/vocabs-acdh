@@ -1,33 +1,23 @@
 {% if request.lang == 'de' %}
-    <div class="about-logo">
+    <!--<div class="about-logo">
         <h1>{% trans "Über Vocabs" %}</h1>
-    </div>
+    </div>-->
 {% else %}
-    <div class="about-logo">
+    <!--<div class="about-logo">
         <h1>{% trans "About" %}</h1>
-    </div>
+    </div>-->
 {% endif %}
 
-<div id="about">
+<div>
     <div class="about-content">
         {# This is the template for the about page. You can enter any html here and show different language versions by using the lang value in a twig conditional as demonstrated below. #}
-        {% if request.lang == 'fi' %}
+        {% if request.lang == 'en' %}
 
-            <h4>Tietoja sanastoselaimesta</h4>
-            <p>Skosmos on web-pohjainen sanasto ja ontologiaselain.</p>
-            <a href="http://github.com/NatLibFi/Skosmos">Skosmos GitHub-repositorio</a>
-            {% elseif request.lang == 'sv' %}
-
-            <h4>Information</h4>
-            <p>Skosmos är en ontologibrowser.</p>
-            <a href="http://github.com/NatLibFi/Skosmos">Skosmos på GitHub</a>
-
-        {% elseif request.lang == 'en' %}
             <div class="container-fluid">
                 <h4>About Vocabs</h4>
                 <div class="row">
                     <div class="col-sm-12">
-                        <p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH provides services and tools that allow for collaborative creation, maintenance and publication of vocabularies and taxonomies of any kind.
+                        <p>In many areas of scholarly work, controlled vocabularies (gazetteers, thesauri, etc.) play a crucial role as a stable reference for resources and for ensuring interoperability between disparate projects and their data. The ACDH-CH provides services and tools that allow for collaborative creation, maintenance and publication of vocabularies and taxonomies of any kind.
                     </div>
                 </div>
             </div>
@@ -42,7 +32,7 @@
                         </p>
                         <br>
                         <p>
-                        Vocabs repository does not only serve controlled vocabularies for ACDH purposes, but is also employed as a service for partners of the national <a href="http://www.digital-humanities.at/en">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/">PARTHENOS</a>.
+                        Vocabs repository does not only serve controlled vocabularies for ACDH-CH purposes, but is also employed as a service for partners of the national <a href="http://www.digital-humanities.at/en">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/">PARTHENOS</a>.
                         </p>
                     </div>
                 </div>
@@ -124,7 +114,7 @@
             <!--<br/><br/>
             The system is based on the open-source software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, which uses <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
             <br/><br/>
-            Vocabs does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH aims to offer Vocabs as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
+            Vocabs does not only serve controlled vocabularies for ACDH-CH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH-CH aims to offer Vocabs as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
             </p>-->
 
         {% elseif request.lang == 'de' %}
@@ -133,7 +123,7 @@
                 <h4>Über Vocabs</h4>
                 <div class="row">
                     <div class="col-sm-12">
-                        <p>Kontrollierte Vokabulare (Gazetteers, Thesauri, etc.) spielen in vielen Bereichen wissenschaftlichen Arbeitens eine entscheidende Rolle. Sie gewährleisten stabile Referenzen für Ressourcen und sind Voraussetzung für optimale Interoperabilität zwischen unterschiedlichen Projekten und deren Daten. Mit der Vocabs Suite stellt das ACDH eine Reihe von Diensten zur Verfügung, welche die Erstellung, Wartung und Veröffentlichung von Vokabularen und Taxonomien in kollaborativer Arbeitsweise unterstützen. Zum Angebot des ACDH gehören derzeit ein Repositorium, ein Editor, ein SPARQL-Endpunkt, ein Visualisierungsdienst und eine API.
+                        <p>Kontrollierte Vokabulare (Gazetteers, Thesauri, etc.) spielen in vielen Bereichen wissenschaftlichen Arbeitens eine entscheidende Rolle. Sie gewährleisten stabile Referenzen für Ressourcen und sind Voraussetzung für optimale Interoperabilität zwischen unterschiedlichen Projekten und deren Daten. Mit der Vocabs Suite stellt das ACDH-CH eine Reihe von Diensten zur Verfügung, welche die Erstellung, Wartung und Veröffentlichung von Vokabularen und Taxonomien in kollaborativer Arbeitsweise unterstützen. Zum Angebot des ACDH-CH gehören derzeit ein Repositorium, ein Editor, ein SPARQL-Endpunkt, ein Visualisierungsdienst und eine API.
                     </div>
                 </div>
             </div>
@@ -144,11 +134,11 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <p>
-                        Das System des ACDH Vocabs Repository basiert auf der Open-Source-Software <a href="http://skosmos.org/">Skosmos</a>, der wiederum das <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/">SKOS</a> Datenmodell zugrunde liegt. Skosmos ermöglicht das Durchsuchen von Vokabularen, ihre Anzeige in strukturierten Begriffsansichten, sowie die visuelle Darstellung von Konzepthierarchien. Die Vokabulare können über eine Suchmaske oder über einen alphabetischen bzw. thematischen Index durchsucht werden. Eine REST-API erlaubt den Zugriff auf die Vokabulare zwecks einer Verknüpfung im Sinne von Linked Data.
+                        Das System des ACDH-CH Vocabs Repository basiert auf der Open-Source-Software <a href="http://skosmos.org/">Skosmos</a>, der wiederum das <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/">SKOS</a> Datenmodell zugrunde liegt. Skosmos ermöglicht das Durchsuchen von Vokabularen, ihre Anzeige in strukturierten Begriffsansichten, sowie die visuelle Darstellung von Konzepthierarchien. Die Vokabulare können über eine Suchmaske oder über einen alphabetischen bzw. thematischen Index durchsucht werden. Eine REST-API erlaubt den Zugriff auf die Vokabulare zwecks einer Verknüpfung im Sinne von Linked Data.
                         </p>
                         <br>
                         <p>
-                        Das ACDH Vocabs Repository dient nicht nur der Archivierung von kontrollierten Vokabularen aus ACDH-Anwendungen und Projekten, sondern steht als Service auch Partnern des nationalen <a href="http://www.digital-humanities.at/en">CLARIAH-AT-Konsortiums</a> zur Verfügung. Es wird derzeit sowohl von der <a href="https://www.dariah.eu/">DARIAH-EU</a> Arbeitsgruppe für <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/">Thesaurus Maintenance</a> als auch in und für <a href="http://www.parthenos-project.eu/">PARTHENOS</a> <a href="http://www.parthenos-project.eu/activities-and-wps">WP6 - Services and tools</a>.                        
+                        Das ACDH-CH Vocabs Repository dient nicht nur der Archivierung von kontrollierten Vokabularen aus ACDH-CH-Anwendungen und Projekten, sondern steht als Service auch Partnern des nationalen <a href="http://www.digital-humanities.at/en">CLARIAH-AT-Konsortiums</a> zur Verfügung. Es wird derzeit sowohl von der <a href="https://www.dariah.eu/">DARIAH-EU</a> Arbeitsgruppe für <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/">Thesaurus Maintenance</a> als auch in und für <a href="http://www.parthenos-project.eu/">PARTHENOS</a> <a href="http://www.parthenos-project.eu/activities-and-wps">WP6 - Services and tools</a>.                        
                         </p>
                     </div>
                 </div>
@@ -159,7 +149,7 @@
                 <div class="row h-100">
                     <div class="col-sm-7">
                         <p>
-                        Der ACDH Vocabs Editor ist ein webbasiertes Tool, das kollaboratives Arbeiten bei der Erstellung von kontrollierten Vokabularen ermöglicht.
+                        Der ACDH-CH Vocabs Editor ist ein webbasiertes Tool, das kollaboratives Arbeiten bei der Erstellung von kontrollierten Vokabularen ermöglicht.
                         </p>
                         <br/>
                         <p>
@@ -229,7 +219,7 @@
             <!--<br/><br/>
             The system is based on the open-source software <a href="http://skosmos.org/" target="_blank" rel="noopener">Skosmos</a>, which uses <a href="https://www.w3.org/TR/2009/REC-skos-reference-20090818/" target="_blank" rel="noopener">SKOS</a> as the underlying data model. Skosmos offers browsing of vocabularies with structured concept displays and visualisation of concept hierarchies. Vocabularies can be searched with a search interface or by consulting an alphabetical or thematic index. Vocabularies can be accessed via a REST-API, to allow for Linked Data.
             <br/><br/>
-            Vocabs does not only serve controlled vocabularies for ACDH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH aims to offer Vocabs as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
+            Vocabs does not only serve controlled vocabularies for ACDH-CH purposes, but is also employed for some of the central services of the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN</a> infrastructure: the <a href="https://www.oeaw.ac.at/acdh/projects/clarin/" target="_blank" rel="noopener">CLARIN concept registry</a> and <a href="https://openskos.meertens.knaw.nl/clavas/" target="_blank" rel="noopener">CLAVAS</a>, a repository for specific metadata vocabularies. Additionally ACDH-CH aims to offer Vocabs as a service for partners of the national <a href="http://www.digital-humanities.at/de" target="_blank" rel="noopener">CLARIAH-AT</a> consortium, for the <a href="https://www.dariah.eu/activities/working-groups/thesaurus-maintenance/" target="_blank" rel="noopener">Thesaurus Maintenance</a> working group in <a href="https://www.dariah.eu/" target="_blank" rel="noopener">DARIAH-EU</a>, and for <a href="http://www.parthenos-project.eu/activities-and-wps/" target="_blank" rel="noopener">WP6 - Services and tools</a> in <a href="http://www.parthenos-project.eu/" target="_blank" rel="noopener">PARTHENOS</a>.
             </p>-->
 
         {% endif %}

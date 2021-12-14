@@ -11,12 +11,12 @@ class GenericSparql {
     protected $client;
     /**
      * Graph uri.
-     * @property string $graph
+     * @property object $graph
      */
     protected $graph;
     /**
      * A SPARQL query graph part template.
-     * @property string $graph
+     * @property string $graphClause
      */
     protected $graphClause;
     /**
@@ -82,8 +82,8 @@ class GenericSparql {
 
     /**
      * Execute the SPARQL query using the SPARQL client, logging it as well.
-     * @param string $query SPARQL query to perform
-     * @return Result|\EasyRdf\Graph query result
+     * @param string $query SPARQL query to perform
+     * @return \EasyRdf\Sparql\Result|\EasyRdf\Graph query result
      */
     protected function query($query) {
         $queryId = sprintf("%05d", rand(0, 99999));
@@ -178,15 +178,21 @@ class GenericSparql {
      */
     private function generateCountConceptsQuery($array, $group) {
         $fcl = $this->generateFromClause();
-        $optional = $array ? "UNION { ?type rdfs:subClassOf* <$array> }" : '';
-        $optional .= $group ? "UNION { ?type rdfs:subClassOf* <$group> }" : '';
+        $optional = $array ? "(<$array>) " : '';
+        $optional .= $group ? "(<$group>)" : '';
         $query = <<<EOQ
-      SELECT (COUNT(?conc) as ?c) ?type ?typelabel $fcl WHERE {
-        { ?conc a ?type .
-        { ?type rdfs:subClassOf* skos:Concept . } UNION { ?type rdfs:subClassOf* skos:Collection . } $optional }
-        OPTIONAL { ?type rdfs:label ?typelabel . }
-      }
-GROUP BY ?type ?typelabel
+      SELECT (COUNT(DISTINCT(?conc)) as ?c) ?type ?typelabel (COUNT(?depr) as ?deprcount) $fcl WHERE {
+        VALUES (?value) { (skos:Concept) (skos:Collection) $optional }
+  	    ?type rdfs:subClassOf* ?value
+        { ?type ^a ?conc .
+          OPTIONAL { ?conc owl:deprecated ?depr .
+  		    FILTER (?depr = True)
+          }
+        } UNION {SELECT * WHERE {
+            ?type rdfs:label ?typelabel
+          }
+        }
+      } GROUP BY ?type ?typelabel
 EOQ;
         return $query;
     }
@@ -203,10 +209,16 @@ EOQ;
             if (!isset($row->type)) {
                 continue;
             }
-            $ret[$row->type->getUri()]['type'] = $row->type->getUri();
-            $ret[$row->type->getUri()]['count'] = $row->c->getValue();
+            $typeURI = $row->type->getUri();
+            $ret[$typeURI]['type'] = $typeURI;
+
+            if (!isset($row->typelabel)) {
+                $ret[$typeURI]['count'] = $row->c->getValue();
+                $ret[$typeURI]['deprecatedCount'] = $row->deprcount->getValue();
+            }
+
             if (isset($row->typelabel) && $row->typelabel->getLang() === $lang) {
-                $ret[$row->type->getUri()]['label'] = $row->typelabel->getValue();
+                $ret[$typeURI]['label'] = $row->typelabel->getValue();
             }
 
         }
@@ -216,7 +228,9 @@ EOQ;
     /**
      * Used for counting number of concepts and collections in a vocabulary.
      * @param string $lang language of labels
-     * @return int number of concepts in this vocabulary
+     * @param string $array the uri of the concept array class, eg. isothes:ThesaurusArray
+     * @param string $group the uri of the  concept group class, eg. isothes:ConceptGroup
+     * @return array with number of concepts in this vocabulary per label
      */
     public function countConcepts($lang = null, $array = null, $group = null) {
         $query = $this->generateCountConceptsQuery($array, $group);
@@ -385,6 +399,7 @@ CONSTRUCT {
  ?o skos:notation ?on .
  ?o ?oprop ?oval .
  ?o ?xlprop ?xlval .
+ ?dt rdfs:label ?dtlabel .
  ?directgroup skos:member ?uri .
  ?parent skos:member ?group .
  ?group skos:prefLabel ?grouplabel .
@@ -400,6 +415,7 @@ CONSTRUCT {
     ?s ?p ?uri .
     FILTER(!isBlank(?s))
     FILTER(?p != skos:inScheme)
+    FILTER NOT EXISTS { ?s owl:deprecated true . }
   }
   UNION
   { ?sp ?uri ?op . }
@@ -414,6 +430,12 @@ CONSTRUCT {
   UNION
   {
    ?uri ?p ?o .
+   OPTIONAL {
+     ?uri skos:notation ?nVal .
+     FILTER(isLiteral(?nVal))
+     BIND(datatype(?nVal) AS ?dt)
+     ?dt rdfs:label ?dtlabel
+   }
    OPTIONAL {
      ?o rdf:rest* ?b1 .
      ?b1 rdf:first ?item .
@@ -466,7 +488,11 @@ EOQ;
         $conceptArray = array();
         foreach ($uris as $index => $uri) {
             $conc = $result->resource($uri);
-            $vocab = (isset($vocabs) && sizeof($vocabs) == 1) ? $vocabs[0] : $vocabs[$index];
+            if (is_array($vocabs)) {
+                $vocab = (sizeof($vocabs) == 1) ? $vocabs[0] : $vocabs[$index];
+            } else {
+                $vocab = null;
+            }
             $conceptArray[] = new Concept($this->model, $vocab, $conc, $result, $clang);
         }
         return $conceptArray;
@@ -603,7 +629,7 @@ EOQ;
     /**
      * Retrieves conceptScheme information from the endpoint.
      * @param string $conceptscheme concept scheme URI
-     * @return EasyRDF_Graph query result graph
+     * @return \EasyRdf\Sparql\Result|\EasyRdf\Graph query result graph
      */
     public function queryConceptScheme($conceptscheme) {
         $query = $this->generateQueryConceptSchemeQuery($conceptscheme);
@@ -813,7 +839,7 @@ EOV;
     /**
      * @param string $lang language code of the returned labels
      * @param array|null $fields extra fields to include in the result (array of strings). (default: null = none)
-     * @return string sparql query clause
+     * @return array sparql query clause
      */
     protected function formatExtraFields($lang, $fields) {
         // extra variable expressions to request and extra fields to query for
@@ -957,7 +983,7 @@ EOQ;
         return $query;
     }
     /**
-    *  This function can be overwritten in other SPARQL dialects for the possibility of handling the differenc language clauses
+    *  This function can be overwritten in other SPARQL dialects for the possibility of handling the different language clauses
      * @param string $lang
      * @return string formatted language clause
      */
@@ -1227,7 +1253,7 @@ EOQ;
      * @return string sparql query
      */
     protected function generateAlphabeticalListQuery($letter, $lang, $limit, $offset, $classes, $showDeprecated = false, $qualifier = null) {
-        $fcl = $this->generateFromClause();
+        $gcl = $this->graphClause;
         $classes = ($classes) ? $classes : array('http://www.w3.org/2004/02/skos/core#Concept');
         $values = $this->formatValues('?type', $classes, 'uri');
         $limitandoffset = $this->formatLimitAndOffset($limit, $offset);
@@ -1240,31 +1266,33 @@ EOQ;
             $filterDeprecated="FILTER NOT EXISTS { ?s owl:deprecated true }";
         }
         $query = <<<EOQ
-SELECT DISTINCT ?s ?label ?alabel ?qualifier $fcl
+SELECT DISTINCT ?s ?label ?alabel ?qualifier
 WHERE {
-  {
-    ?s skos:prefLabel ?label .
-    FILTER (
-      $filtercondLabel
-    )
-  }
-  UNION
-  {
-    {
-      ?s skos:altLabel ?alabel .
-      FILTER (
-        $filtercondALabel
-      )
-    }
+  $gcl {
     {
       ?s skos:prefLabel ?label .
-      FILTER (langMatches(lang(?label), '$lang'))
+      FILTER (
+        $filtercondLabel
+      )
     }
+    UNION
+    {
+      {
+        ?s skos:altLabel ?alabel .
+        FILTER (
+          $filtercondALabel
+        )
+      }
+      {
+        ?s skos:prefLabel ?label .
+        FILTER (langMatches(lang(?label), '$lang'))
+      }
+    }
+    ?s a ?type .
+    $qualifierClause
+    $filterDeprecated
+    $values
   }
-  ?s a ?type .
-  $qualifierClause
-  $filterDeprecated
-  $values
 }
 ORDER BY LCASE(STR(COALESCE(?alabel, ?label))) STR(?s) LCASE(STR(?qualifier)) $limitandoffset
 EOQ;
@@ -1325,6 +1353,9 @@ EOQ;
      * @param \EasyRdf\Resource|null $qualifier alphabetical list qualifier resource or null (default: null)
      */
     public function queryConceptsAlphabetical($letter, $lang, $limit = null, $offset = null, $classes = null, $showDeprecated = false, $qualifier = null) {
+        if ($letter === '') {
+            return array(); // special case: no letter given, return empty list
+        }
         $query = $this->generateAlphabeticalListQuery($letter, $lang, $limit, $offset, $classes, $showDeprecated, $qualifier);
         $results = $this->query($query);
         return $this->transformAlphabeticalListResults($results);
@@ -1337,15 +1368,17 @@ EOQ;
      * @return string sparql query
      */
     private function generateFirstCharactersQuery($lang, $classes) {
-        $fcl = $this->generateFromClause();
+        $gcl = $this->graphClause;
         $classes = (isset($classes) && sizeof($classes) > 0) ? $classes : array('http://www.w3.org/2004/02/skos/core#Concept');
         $values = $this->formatValues('?type', $classes, 'uri');
         $query = <<<EOQ
-SELECT DISTINCT (ucase(str(substr(?label, 1, 1))) as ?l) $fcl WHERE {
-  ?c skos:prefLabel ?label .
-  ?c a ?type
-  FILTER(langMatches(lang(?label), '$lang'))
-  $values
+SELECT DISTINCT (ucase(str(substr(?label, 1, 1))) as ?l) WHERE {
+  $gcl {
+    ?c skos:prefLabel ?label .
+    ?c a ?type
+    FILTER(langMatches(lang(?label), '$lang'))
+    $values
+  }
 }
 EOQ;
         return $query;
@@ -1958,7 +1991,7 @@ EOQ;
      * Transforms the result into an array.
      * @param EasyRdf\Sparql\Result
      * @param string $lang
-     * @return an array for the REST controller to encode.
+     * @return array|null an array for the REST controller to encode.
      */
     private function transformParentListResults($result, $lang)
     {
@@ -1977,7 +2010,7 @@ EOQ;
             }
             if (isset($row->tops)) {
                $topConceptsList=explode(" ", $row->tops->getValue());
-               // sort to garantee an alphabetical ordering of the URI
+               // sort to guarantee an alphabetical ordering of the URI
                sort($topConceptsList);
                $ret[$uri]['tops'] = $topConceptsList;
             }

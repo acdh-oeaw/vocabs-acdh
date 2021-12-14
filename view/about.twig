@@ -2,10 +2,22 @@
 {% block sidebar %}{% endblock %}
 {% block headernav %}{% endblock %}
 {% block content %}
-
-{% include ['about.inc', 'about.inc.dist']  %}
-
-<div class="version">
-  <p>{% trans %}Skosmos version {{ version }}{% endtrans %}</p>
+<div class="about-logo">
+  <h1>{% trans "About" %}</h1>
+</div>
+<div id="about">
+  <div class="about-content">
+    {% include ['about.inc', 'about.inc.dist']  %}
+  </div>
+</div>
+<div class="about-extra-info">
+  <div class="credits">
+    <p>Using layout <a href="https://fundament.acdh.oeaw.ac.at/">ACDH-CH Fundament</a><br />
+Partially used Skosmos {% trans "layout designed by Hahmo" %}</p>
+  </div>
+  <div class="version">
+    {% set version = request.version %}
+    <p>{% trans %}Skosmos version {{ version }}{% endtrans %}</p>
+  </div>
 </div>
 {% endblock %}

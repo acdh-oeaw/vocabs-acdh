@@ -74,11 +74,11 @@ class Model
      * it cannot be determined. The version information is based on Git tags.
      * @return string version
      */
-    public function getVersion()
+    public function getVersion() : string
     {
         $ver = null;
         if (file_exists('.git')) {
-            $ver = shell_exec('git describe --tags --always');
+            $ver = rtrim(shell_exec('git describe --tags --always'));
         }
 
         if ($ver === null) {
@@ -210,7 +210,7 @@ class Model
      * Makes a SPARQL-query to the endpoint that retrieves concept
      * references as it's search results.
      * @param ConceptSearchParameters $params an object that contains all the parameters needed for the search
-     * @return array search results
+     * @return array search results
      */
     public function searchConcepts($params)
     {
@@ -245,7 +245,7 @@ class Model
                 try {
                     $hitvoc = $this->getVocabularyByGraph($hit['graph']);
                     $hit['vocab'] = $hitvoc->getId();
-                } catch (Exception $e) {
+                } catch (ValueError $e) {
                     trigger_error($e->getMessage(), E_USER_WARNING);
                     $hitvoc = null;
                     $hit['vocab'] = "???";
@@ -255,7 +255,7 @@ class Model
 
             $hit['voc'] = $hitvoc;
 
-            if (!$hitvoc->containsURI($hit['uri'])) {
+            if ($hitvoc === null || !$hitvoc->containsURI($hit['uri'])) {
                 // if uri is a external vocab uri that is included in the current vocab
                 $realvoc = $this->guessVocabularyFromURI($hit['uri'], $voc !== null ? $voc->getId() : null);
                 if ($realvoc !== $hitvoc) {
@@ -417,7 +417,7 @@ class Model
                 return $voc;
             }
         }
-        throw new Exception("Vocabulary id '$vocid' not found in configuration.");
+        throw new ValueError("Vocabulary id '$vocid' not found in configuration.");
     }
 
     /**
@@ -444,7 +444,7 @@ class Model
         if (array_key_exists($key, $this->vocabsByGraph)) {
             return $this->vocabsByGraph[$key];
         } else {
-            throw new Exception("no vocabulary found for graph $graph and endpoint $endpoint");
+            throw new ValueError("no vocabulary found for graph $graph and endpoint $endpoint");
         }
 
     }
@@ -470,11 +470,18 @@ class Model
         if($preferredVocabId != null) {
             foreach ($vocabs as $vocab) {
                 if($vocab->getId() == $preferredVocabId) {
-                    // double check that a label exists in the preferred vocabulary
-                    if ($vocab->getConceptLabel($uri, null) !== null) {
-                        return $vocab;
-                    } else {
-                        // not found in preferred vocabulary, fall back to next method
+                    try {
+                        // double check that a label exists in the preferred vocabulary
+                        if ($vocab->getConceptLabel($uri, null) !== null) {
+                            return $vocab;
+                        } else {
+                            // not found in preferred vocabulary, fall back to next method
+                            break;
+                        }
+                    } catch (EasyRdf\Http\Exception | EasyRdf\Exception | Throwable $e) {
+                        if ($this->getConfig()->getLogCaughtExceptions()) {
+                            error_log('Caught exception: ' . $e->getMessage());
+                        }
                         break;
                     }
                 }
@@ -483,8 +490,16 @@ class Model
 
         // no preferred vocabulary, or it was not found, search in which vocabulary the concept has a label
         foreach ($vocabs as $vocab) {
-            if ($vocab->getConceptLabel($uri, null) !== null)
-                return $vocab;
+            try {
+                if ($vocab->getConceptLabel($uri, null) !== null) {
+                    return $vocab;
+                }
+            } catch (EasyRdf\Http\Exception | EasyRdf\Exception | Throwable $e) {
+                if ($this->getConfig()->getLogCaughtExceptions()) {
+                    error_log('Caught exception: ' . $e->getMessage());
+                }
+                break;
+            }
         }
 
         // if the URI couldn't be found, fall back to the first vocabulary

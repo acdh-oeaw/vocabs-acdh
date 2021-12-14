@@ -11,4 +11,5 @@ tests/jena-fuseki*
 .vagrant
 .project
 .DS_Store
+.phpunit.result.cache
 download

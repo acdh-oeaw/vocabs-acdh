@@ -7,7 +7,8 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
    */
   private $model;
 
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -152,7 +153,10 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
   public function testGetStatistics() {
     $vocab = $this->model->getVocabulary('test');
     $stats = $vocab->getStatistics();
-    $this->assertEquals(17, $stats['http://www.w3.org/2004/02/skos/core#Concept']['count']);
+    $this->assertEquals(18, $stats['http://www.w3.org/2004/02/skos/core#Concept']['count']);
+    $this->assertEquals(1, $stats['http://www.w3.org/2004/02/skos/core#Concept']['deprecatedCount']);
+    $this->assertEquals(13, $stats['http://www.skosmos.skos/test-meta/TestClass']['count']);
+    $this->assertEquals(1, $stats['http://www.skosmos.skos/test-meta/TestClass']['deprecatedCount']);
   }
 
   /**
@@ -160,7 +164,7 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
    */
   public function testListConceptGroups() {
     $vocab = $this->model->getVocabulary('groups');
-    $cgroups = $vocab->listConceptGroups(false, 'en');
+    $cgroups = $vocab->listConceptGroups('en');
     $expected = array (0 => array ('uri' => 'http://www.skosmos.skos/groups/fish', 'hasMembers' => true, 'childGroups' => array('http://www.skosmos.skos/groups/sub'), 'prefLabel' => 'Fish'), 1 => array ('uri' => 'http://www.skosmos.skos/groups/fresh', 'hasMembers' => true, 'prefLabel' => 'Freshwater fish'), 2 => array ('uri' => 'http://www.skosmos.skos/groups/salt', 'hasMembers' => true, 'prefLabel' => 'Saltwater fish'),3 => array ('uri' => 'http://www.skosmos.skos/groups/sub', 'hasMembers' => true, 'prefLabel' => 'Submarine-like fish'));
     $this->assertEquals($expected, $cgroups);
   }
@@ -285,7 +289,7 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
    * @covers Vocabulary::searchConceptsAlphabetical
    * @covers JenaTextSparql::queryConceptsAlphabetical
    * @covers JenaTextSparql::generateAlphabeticalListQuery
-   * @covers JenaTextSparql::transformAlphabeticalListResults
+   * @covers GenericSparql::transformAlphabeticalListResults
    */
   public function testSearchConceptsAlphabeticalQualifiedNotation() {
     $vocab = $this->jenamodel->getVocabulary('test-qualified-notation');
@@ -328,7 +332,7 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
    * @covers Vocabulary::searchConceptsAlphabetical
    * @covers JenaTextSparql::queryConceptsAlphabetical
    * @covers JenaTextSparql::generateAlphabeticalListQuery
-   * @covers JenaTextSparql::transformAlphabeticalListResults
+   * @covers GenericSparql::transformAlphabeticalListResults
    */
   public function testSearchConceptsAlphabeticalQualifiedBroader() {
     $vocab = $this->jenamodel->getVocabulary('test-qualified-broader');

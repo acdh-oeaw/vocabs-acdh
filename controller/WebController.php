@@ -179,13 +179,13 @@ class WebController extends Controller
             return;
         }
         $pluginParameters = $vocab->getConfig()->getPluginParameters();
-        /** @var \Twig\Template $template */
         $template = (in_array('skos:Concept', $results[0]->getType()) || in_array('skos:ConceptScheme', $results[0]->getType())) ? $this->twig->loadTemplate('concept-info.twig') : $this->twig->loadTemplate('group-contents.twig');
 
         $crumbs = $vocab->getBreadCrumbs($request->getContentLang(), $uri);
         echo $template->render(array(
             'search_results' => $results,
             'vocab' => $vocab,
+            'concept_uri' => $uri,
             'languages' => $this->languages,
             'explicit_langcodes' => $langcodes,
             'bread_crumbs' => $crumbs['breadcrumbs'],
@@ -206,25 +206,22 @@ class WebController extends Controller
         $vocab = $request->getVocab();
 
         $feedbackSent = false;
-        $feedbackMsg = null;
         if ($request->getQueryParamPOST('message')) {
             $feedbackSent = true;
             $feedbackMsg = $request->getQueryParamPOST('message');
+            $feedbackName = $request->getQueryParamPOST('name');
+            $feedbackEmail = $request->getQueryParamPOST('email');
+            $msgSubject = $request->getQueryParamPOST('msgsubject');
+            $feedbackVocab = $request->getQueryParamPOST('vocab');
+            $feedbackVocabEmail = ($feedbackVocab !== null && $feedbackVocab !== '') ?
+                $this->model->getVocabulary($feedbackVocab)->getConfig()->getFeedbackRecipient() : null;
+            // if the hidden field has been set a value we have found a spam bot
+            // and we do not actually send the message.
+            if ($this->honeypot->validateHoneypot($request->getQueryParamPOST('item-description')) &&
+                $this->honeypot->validateHoneytime($request->getQueryParamPOST('user-captcha'), $this->model->getConfig()->getHoneypotTime())) {
+                $this->sendFeedback($request, $feedbackMsg, $msgSubject, $feedbackName, $feedbackEmail, $feedbackVocab, $feedbackVocabEmail);
+            }
         }
-        $feedbackName = $request->getQueryParamPOST('name');
-        $feedbackEmail = $request->getQueryParamPOST('email');
-        $feedbackVocab = $request->getQueryParamPOST('vocab');
-
-        $feedbackVocabEmail = ($feedbackVocab !== null && $feedbackVocab !== '') ?
-            $this->model->getVocabulary($feedbackVocab)->getConfig()->getFeedbackRecipient() : null;
-
-        // if the hidden field has been set a value we have found a spam bot
-        // and we do not actually send the message.
-        if ($this->honeypot->validateHoneypot($request->getQueryParamPOST('item-description')) &&
-            $this->honeypot->validateHoneytime($request->getQueryParamPOST('user-captcha'), $this->model->getConfig()->getHoneypotTime())) {
-            $this->sendFeedback($request, $feedbackMsg, $feedbackName, $feedbackEmail, $feedbackVocab, $feedbackVocabEmail);
-        }
-
         echo $template->render(
             array(
                 'languages' => $this->languages,
@@ -245,27 +242,26 @@ class WebController extends Controller
         if (!empty($fromEmail)) {
             $headers .= "Reply-To: $fromName <$fromEmail>\r\n";
         }
-
         $service = $this->model->getConfig()->getServiceName();
         return $headers . "From: $fromName via $service <$sender>";
     }
 
     /**
      * Sends the user entered message through the php's mailer.
-     * @param string $message only required parameter is the actual message.
+     * @param string $message content given by user.
+     * @param string $messageSubject subject line given by user.
      * @param string $fromName senders own name.
      * @param string $fromEmail senders email address.
      * @param string $fromVocab which vocabulary is the feedback related to.
      */
-    public function sendFeedback($request, $message, $fromName = null, $fromEmail = null, $fromVocab = null, $toMail = null)
+    public function sendFeedback($request, $message, $messageSubject, $fromName = null, $fromEmail = null, $fromVocab = null, $toMail = null)
     {
         $toAddress = ($toMail) ? $toMail : $this->model->getConfig()->getFeedbackAddress();
+        $messageSubject = "[" . $this->model->getConfig()->getServiceName() . "] " . $messageSubject;
         if ($fromVocab !== null && $fromVocab !== '') {
             $message = 'Feedback from vocab: ' . strtoupper($fromVocab) . "<br />" . $message;
         }
-
         $envelopeSender = $this->model->getConfig()->getFeedbackEnvelopeSender();
-        $subject = $this->model->getConfig()->getServiceName() . " feedback";
         // determine the sender address of the message
         $sender = $this->model->getConfig()->getFeedbackSender();
         if (empty($sender)) $sender = $envelopeSender;
@@ -273,10 +269,8 @@ class WebController extends Controller
 
         // determine sender name - default to "anonymous user" if not given by user
         if (empty($fromName)) $fromName = "anonymous user";
-
         $headers = $this->createFeedbackHeaders($fromName, $fromEmail, $toMail, $sender);
         $params = empty($envelopeSender) ? '' : "-f $envelopeSender";
-
         // adding some information about the user for debugging purposes.
         $message = $message . "<br /><br /> Debugging information:"
             . "<br />Timestamp: " . date(DATE_RFC2822)
@@ -284,7 +278,7 @@ class WebController extends Controller
             . "<br />Referer: " . $request->getServerConstant('HTTP_REFERER');
 
         try {
-            mail($toAddress, $subject, $message, $headers, $params);
+            mail($toAddress, $messageSubject, $message, $headers, $params);
         } catch (Exception $e) {
             header("HTTP/1.0 404 Not Found");
             $template = $this->twig->loadTemplate('error-page.twig');
@@ -309,12 +303,10 @@ class WebController extends Controller
         $template = $this->twig->loadTemplate('about.twig');
         $this->setLanguageProperties($request->getLang());
         $url = $request->getServerConstant('HTTP_HOST');
-        $version = $this->model->getVersion();
 
         echo $template->render(
             array(
                 'languages' => $this->languages,
-                'version' => $version,
                 'server_instance' => $url,
                 'request' => $request,
             ));
@@ -364,23 +356,36 @@ class WebController extends Controller
         $vocabObjects = array();
         if ($vocids) {
             foreach($vocids as $vocid) {
-                $vocabObjects[] = $this->model->getVocabulary($vocid);
+                try {
+                    $vocabObjects[] = $this->model->getVocabulary($vocid);
+                } catch (ValueError $e) {
+                    // fail fast with an error page if the vocabulary cannot be found
+                    if ($this->model->getConfig()->getLogCaughtExceptions()) {
+                        error_log('Caught exception: ' . $e->getMessage());
+                    }
+                    header("HTTP/1.0 400 Bad Request");
+                    $this->invokeGenericErrorPage($request, $e->getMessage());
+                    return;
+                }
             }
         }
         $parameters->setVocabularies($vocabObjects);
 
+        $counts = null;
+        $searchResults = null;
+        $errored = false;
+
         try {
             $countAndResults = $this->model->searchConceptsAndInfo($parameters);
+            $counts = $countAndResults['count'];
+            $searchResults = $countAndResults['results'];
         } catch (Exception $e) {
-            header("HTTP/1.0 404 Not Found");
+            $errored = true;
+            header("HTTP/1.0 500 Internal Server Error");
             if ($this->model->getConfig()->getLogCaughtExceptions()) {
                 error_log('Caught exception: ' . $e->getMessage());
             }
-            $this->invokeGenericErrorPage($request, $e->getMessage());
-            return;
         }
-        $counts = $countAndResults['count'];
-        $searchResults = $countAndResults['results'];
         $vocabList = $this->model->getVocabularyList();
         $sortedVocabs = $this->model->getVocabularyList(false, true);
         $langList = $this->model->getLanguages($lang);
@@ -392,6 +397,7 @@ class WebController extends Controller
                 'search_results' => $searchResults,
                 'rest' => $parameters->getOffset()>0,
                 'global_search' => true,
+                'search_failed' => $errored,
                 'term' => $request->getQueryParamRaw('q'),
                 'lang_list' => $langList,
                 'vocabs' => str_replace(' ', '+', $vocabs),
@@ -410,10 +416,11 @@ class WebController extends Controller
         $template = $this->twig->loadTemplate('vocab-search-listing.twig');
         $this->setLanguageProperties($request->getLang());
         $vocab = $request->getVocab();
+        $searchResults = null;
         try {
             $vocabTypes = $this->model->getTypes($request->getVocabid(), $request->getLang());
         } catch (Exception $e) {
-            header("HTTP/1.0 404 Not Found");
+            header("HTTP/1.0 500 Internal Server Error");
             if ($this->model->getConfig()->getLogCaughtExceptions()) {
                 error_log('Caught exception: ' . $e->getMessage());
             }
@@ -421,6 +428,9 @@ class WebController extends Controller
             echo $template->render(
                 array(
                     'languages' => $this->languages,
+                    'vocab' => $vocab,
+                    'request' => $request,
+                    'search_results' => $searchResults
                 ));
 
             return;
@@ -444,6 +454,7 @@ class WebController extends Controller
                     'languages' => $this->languages,
                     'vocab' => $vocab,
                     'term' => $request->getQueryParam('q'),
+                    'search_results' => $searchResults
                 ));
             return;
         }
@@ -490,7 +501,7 @@ class WebController extends Controller
         if (!$allAtOnce) {
             $letters = $vocab->getAlphabet($contentLang);
             $letter = $request->getLetter();
-            if ($letter === '') {
+            if ($letter === '' && isset($letters[0])) {
                 $letter = $letters[0];
             }
             $searchResults = $vocab->searchConceptsAlphabetical($letter, $count, $offset, $contentLang);
@@ -575,6 +586,7 @@ class WebController extends Controller
             array(
                 'languages' => $this->languages,
                 'request' => $request,
+                'vocab' => $request->getVocab(),
                 'message' => $message,
                 'requested_page' => filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING),
             ));
@@ -621,10 +633,11 @@ class WebController extends Controller
     }
 
     /**
-    * Formats the list of concepts as labels arranged by modification month
-    * @param Array $changeList
-    * @param string $lang the language for displaying dates in the change list
-    */
+     * Formats the list of concepts as labels arranged by modification month
+     * @param Array $changeList
+     * @param string $lang the language for displaying dates in the change list
+     * @return array list of concepts as labels by month
+     */
     public function formatChangeList($changeList, $lang)
     {
         $formatByDate = array();

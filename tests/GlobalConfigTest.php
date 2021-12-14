@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tests for GlobalConfig. Must cover all of its methods, and use at least one file configuratoin that contains
+ * Tests for GlobalConfig. Must cover all of its methods, and use at least one file configuration that contains
  * different values than the default ones.
  */
 class GlobalConfigTest extends PHPUnit\Framework\TestCase
@@ -11,7 +11,7 @@ class GlobalConfigTest extends PHPUnit\Framework\TestCase
     /** @var GlobalConfig */
     private $configWithDefaults;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->config = new GlobalConfig('/../tests/testconfig.ttl');
         $this->assertNotNull($this->config->getCache());
@@ -23,7 +23,7 @@ class GlobalConfigTest extends PHPUnit\Framework\TestCase
 
     public function testGetDefaultEndpoint()
     {
-        $this->assertEquals("http://localhost:13030/skosmos-test/sparql", $this->config->getDefaultEndpoint());
+        $this->assertEquals(getenv('SKOSMOS_SPARQL_ENDPOINT'), $this->config->getDefaultEndpoint());
     }
 
     public function testGetDefaultSparqlDialect()

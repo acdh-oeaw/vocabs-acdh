@@ -1,6 +1,6 @@
 $(function() { // DOCUMENT READY
 
-  var spinner = '<div class="loading-spinner"><span class="spinner-text">'+ loading_text + '</span><span class="spinner" /></div>';
+  var spinner = '<div class="loading-spinner"><span class="spinner-text">'+ loading_text + '</span><span class="spinner"></span></div>';
   var searchString = ''; // stores the search field's value before autocomplete selection changes it
   var selectedVocabs = [];
   var vocabId;
@@ -14,12 +14,28 @@ $(function() { // DOCUMENT READY
   shortenProperties();
 
   // kills the autocomplete after a form submit so we won't have to wait for the ajax to complete.
-  $('.navbar-form').submit(
+  $('.navbar-form').on('submit',
     function() {
       $('#search-field').typeahead('destroy');
       $.ajaxQ.abortAll();
     }
   );
+
+  $('#skiptocontent').on('click', function(e) {
+    // fixes an issue with screen reader not regaining true focus after Ctrl + Home
+    if (!e.looped) {
+      // loop focus in order to restore normal functionality
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      document.getElementById("footer").focus({preventScroll: true});
+      setTimeout(function() {
+        $(e.target).trigger({type: 'click', looped: true});
+      }, 100);
+      return false;
+    }
+
+    document.getElementById(e.target.hash.slice(1)).focus({preventScroll: true});
+  });
 
   /*
    * Moving the sidenav scrollbar towards the current concept. Aiming the current
@@ -41,16 +57,14 @@ $(function() { // DOCUMENT READY
         });
         return removeThese.join(' ');
       });
-      if (settings.url.indexOf('index/') !== -1) {
-        $(".sidebar-grey").mCustomScrollbar({
-          alwaysShowScrollbar: 1,
-          scrollInertia: 0,
-          mouseWheel:{ preventDefault: true, scrollAmount: 105 },
-          snapAmount: 15,
-          snapOffset: 1,
-          callbacks: { alwaysTriggerOffsets: false, onTotalScroll: alphaWaypointCallback, onTotalScrollOffset: 300 }
-        });
-      }
+      $(".sidebar-grey-alpha").mCustomScrollbar({
+        alwaysShowScrollbar: 1,
+        scrollInertia: 0,
+        mouseWheel:{ preventDefault: true, scrollAmount: 105 },
+        snapAmount: 15,
+        snapOffset: 1,
+        callbacks: { alwaysTriggerOffsets: false, onTotalScroll: alphaWaypointCallback, onTotalScrollOffset: 300 }
+      });
     }
     // Sidenav actions only happen when doing other queries than the autocomplete.
     if (settings.url.indexOf('index') !== -1 || settings.url.indexOf('groups') !== -1) {
@@ -81,6 +95,15 @@ $(function() { // DOCUMENT READY
       });
     });
 
+    var active_tab = $('li.active').attr('id');
+    if (active_tab == 'groups') {
+      $('#sidebar > h4').remove();
+      $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.groups_listing + '</h4>');
+    } else if (active_tab == 'hierarchy') {
+      $('#sidebar > h4').remove();
+      $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.hierarchy_listing + '</h4>');
+    }
+
     countAndSetOffset();
 
     hideCrumbs();
@@ -88,30 +111,18 @@ $(function() { // DOCUMENT READY
   });
 
   // if the hierarchy tab is active filling the jstree with data
-  if ($('#hierarchy').hasClass('active')) { invokeParentTree(getTreeConfiguration()); }
-  if ($('#groups').hasClass('active')) { invokeGroupTree(); }
-
-  var textColor = $('.search-parameter-highlight').css('color');
-  countAndSetOffset();
-
-  // Make a selection of an element for copy pasting.
-  function makeSelection(e, elem) {
-    var $clicked = elem || $(this);
-    var text = $clicked[0];
-    var range;
-    if (document.body.createTextRange) { // ms
-      range = document.body.createTextRange();
-      range.moveToElementText(text);
-      range.select();
-    } else if (window.getSelection) { // moz, opera, webkit
-      var selection = window.getSelection();
-      range = document.createRange();
-      range.selectNodeContents(text);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    return false;
+  if ($('#hierarchy').hasClass('active')) {
+    $('#sidebar > h4').remove();
+    invokeParentTree(getTreeConfiguration());
+    $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.hierarchical_listing + '</h4>');
   }
+  if ($('#groups').hasClass('active')) {
+    $('#sidebar > h4').remove();
+    invokeGroupTree();
+    $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.groups_listing + '</h4>');
+  }
+
+  countAndSetOffset();
 
   function initHierarchyQtip() {
       if (!$('#hierarchy').length) {
@@ -127,15 +138,6 @@ $(function() { // DOCUMENT READY
   }
 
   $(document).on('click','.uri-input-box', makeSelection);
-
-  // copy to clipboard
-  function copyToClipboard() {
-    var $btn = $(this);
-    var id = $btn.attr('for');
-    var $elem = $(id);
-    makeSelection(undefined, $elem);
-    document.execCommand('copy');
-  }
 
   $(document).on('click', 'button.copy-clipboard', copyToClipboard);
 
@@ -159,14 +161,6 @@ $(function() { // DOCUMENT READY
       }
     }, { offset: -60 }); // when the headerbars bottom margin is at the top of the screen
   }
-
-  // Event handler for restoring the DOM back to normal after the focus is lost from the prefLabel.
-  $(':not(.search-parameter-highlight)').click(
-      function(){
-        $('#temp-textarea').remove();
-        $('.search-parameter-highlight').css({'background': 'transparent', 'color': textColor});
-      }
-  );
 
   // event handling the breadcrumb expansion
   $(document).on('click', '.expand-crumbs',
@@ -204,11 +198,12 @@ $(function() { // DOCUMENT READY
   // ajaxing the concept count and the preflabel counts on the vocabulary front page
   if ($('#vocab-info').length && $('#statistics').length) {
     // adding the spinners
-    $('#counts tr:nth-of-type(1)').after('<tr><td><span class="spinner" /></td></td></tr>');
-    $('#statistics tr:nth-of-type(1)').after('<tr><td><span class="spinner" /></td></td></tr>');
+    $('#counts tr:nth-of-type(1)').after('<tr><td><span class="spinner"></span></td></td></tr>');
+    $('#statistics tr:nth-of-type(1)').after('<tr><td><span class="spinner"></span></td></td></tr>');
     $.ajax({
       url : rest_base_url + vocab + '/vocabularyStatistics',
-      data: $.param({'lang' : content_lang}),
+      req_kind: $.ajaxQ.requestKind.GLOBAL,
+      data: $.param({'lang' : lang}),
       success : function(data) {
         var $spinner = $('#counts tr:nth-of-type(2)');
         var typeStats = '<tr><td class="count-type versal">' + data.concepts.label + '</td><td class="versal">' + data.concepts.count +'</td></tr>';
@@ -217,6 +212,7 @@ $(function() { // DOCUMENT READY
           var label = sub.label ? sub.label : sub.type;
           typeStats += '<tr><td class="count-type versal">&nbsp;&bull;&nbsp;' + label + '</td><td class="versal">' + sub.count + '</td></tr>';
         }
+        typeStats += '<tr><td class="count-type versal">&nbsp;&bull;&nbsp;' + depr_trans + '</td><td class="versal">' + data.concepts.deprecatedCount + '</td></tr>';
         if (data.conceptGroups) {
           typeStats += '<tr><td class="count-type versal">' + data.conceptGroups.label + '</td><td class="versal">' + data.conceptGroups.count +'</td></tr>';
         }
@@ -228,6 +224,7 @@ $(function() { // DOCUMENT READY
 
     $.ajax({
       url : rest_base_url + vocab + '/labelStatistics',
+      req_kind: $.ajaxQ.requestKind.GLOBAL,
       data: $.param({'lang' : lang}),
       success : function(data) {
         $('#statistics tr:nth-of-type(2)').detach(); // removing the spinner
@@ -282,21 +279,20 @@ $(function() { // DOCUMENT READY
   // event handler for clicking the hierarchy concepts
   $(document).on('click', '.concept-hierarchy a',
       function(event) {
-        event.preventDefault();
-        var targetUrl = event.target.href;
-        var parameters = (clang !== lang) ? $.param({'clang' : clang}) : $.param({});
-        var historyUrl = (clang !== lang) ? targetUrl + '?' + parameters : targetUrl;
+        $.ajaxQ.abortContentQueries();
+        var targetUrl = event.target.href || event.target.parentElement.href;
         $('#hier-trigger').attr('href', targetUrl);
         var $content = $('.content').empty().append($delayedSpinner.hide());
         var loading = delaySpinner();
         $.ajax({
             url : targetUrl,
-            data: parameters,
+            req_kind: $.ajaxQ.requestKind.CONTENT,
+
             complete: function() { clearTimeout(loading); },
             success : function(data) {
               $content.empty();
               var response = $('.content', data).html();
-              if (window.history.pushState) { window.history.pushState({url: historyUrl}, '', historyUrl); }
+              if (window.history.pushState) { window.history.pushState({url: targetUrl}, '', targetUrl); }
               $content.append(response);
 
               updateJsonLD(data);
@@ -314,19 +310,20 @@ $(function() { // DOCUMENT READY
   // event handler for clicking the alphabetical/group index concepts
   $(document).on('click', '.side-navi a',
       function(event) {
-        $.ajaxQ.abortAll();
+        $.ajaxQ.abortContentQueries();
         $('.activated-concept').removeClass('activated-concept');
         $(this).addClass('activated-concept');
         var $content = $('.content').empty().append($delayedSpinner.hide());
         var loading = delaySpinner();
         $.ajax({
-            url : event.target.href,
+            url : event.currentTarget.href,
+            req_kind: $.ajaxQ.requestKind.CONTENT,
             complete: function() { clearTimeout(loading); },
-            success : function(data) {
-              if (window.history.pushState) { window.history.pushState({}, null, event.target.href); }
+            success : function(data, responseCode, jqxhr) {
+              if (window.history.pushState) { window.history.pushState({}, null, event.currentTarget.href); }
               $content.empty().append($('.content', data).html());
               initHierarchyQtip();
-              $('#hier-trigger').attr('href', event.target.href);
+              $('#hier-trigger').attr('href', event.currentTarget.href);
               updateJsonLD(data);
               updateTitle(data);
               updateTopbarLang(data);
@@ -342,7 +339,7 @@ $(function() { // DOCUMENT READY
   // event handler for clicking the alphabetical index tab
   $(document).on('click', '#alpha',
       function(event) {
-        $.ajaxQ.abortAll();
+        $.ajaxQ.abortSidebarQueries(true);
         $('.active').removeClass('active');
         $('#alpha').addClass('active');
         alpha_complete = false;
@@ -350,6 +347,7 @@ $(function() { // DOCUMENT READY
         var targetUrl = event.target.href;
         $.ajax({
             url : targetUrl,
+            req_kind: $.ajaxQ.requestKind.SIDEBAR,
             success : function(data) {
               updateSidebar(data);
               $('.nav').scrollTop(0);
@@ -364,15 +362,16 @@ $(function() { // DOCUMENT READY
   // event handler for clicking the changes tab
   $(document).on('click', '#changes',
       function(event) {
-        $.ajaxQ.abortAll();
+        $.ajaxQ.abortSidebarQueries(true);
         $('.active').removeClass('active');
         $('#changes').addClass('active');
         $('.sidebar-grey').empty().prepend(spinner);
-        var $pagination = $('.pagination');
-        if ($pagination) { $pagination.hide(); }
+        $('.pagination').hide();
+        $('#sidebar > h4.sr-only').hide();
         var targetUrl = event.target.href;
         $.ajax({
             url : targetUrl,
+            req_kind: $.ajaxQ.requestKind.SIDEBAR,
             success : function(data) {
               updateSidebar(data);
               $('.nav').scrollTop(0);
@@ -407,8 +406,10 @@ $(function() { // DOCUMENT READY
         $('.active').removeClass('active');
         $('#hier-trigger').parent().addClass('active');
         $('.pagination').hide();
+        $('#sidebar > h4.sr-only').hide();
         $content.append('<div class="sidebar-grey concept-hierarchy"></div>');
         invokeParentTree(getTreeConfiguration());
+        $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.hierarchy_listing + '</h4>');
         $('#hier-trigger').attr('href', '#');
         return false;
       }
@@ -424,17 +425,17 @@ $(function() { // DOCUMENT READY
   // event handler for clicking the group index tab
   $(document).on('click', '#groups > a',
       function(event) {
-        $.ajaxQ.abortAll();
+        $.ajaxQ.abortSidebarQueries(true);
         $('.active').removeClass('active');
         var $clicked = $(this);
         $clicked.parent().addClass('active');
-        var $pagination = $('.pagination');
-        if ($pagination) { $pagination.hide(); }
-        if ($('.changes-navi')) { $('.changes-navi').hide(); }
+        $('.pagination').hide();
+        $('#sidebar > h4.sr-only').hide();
         $('.sidebar-grey').remove().prepend(spinner);
         $('#sidebar').append('<div class="sidebar-grey"><div class="group-hierarchy"></div></div>');
         if (window.history.pushState) { window.history.pushState({}, null, encodeURI(event.target.href)); }
         invokeGroupTree();
+        $('.sidebar-grey').before('<h4 class="sr-only">' + sr_only_translations.groups_listing + '</h4>');
         return false;
       }
   );
@@ -442,11 +443,14 @@ $(function() { // DOCUMENT READY
   // event handler for clicking groups
   $(document).on('click','div.group-hierarchy a',
       function(event) {
+        $.ajaxQ.abortContentQueries();
         var $content = $('.content').empty().append($delayedSpinner.hide());
         var loading = delaySpinner();
         // ajaxing the sidebar content
         $.ajax({
             url : event.target.href,
+            req_kind: $.ajaxQ.requestKind.CONTENT,
+            complete: function() { clearTimeout(loading); },
             success : function(data) {
               initHierarchyQtip();
               $('#hier-trigger').attr('href', event.target.href);
@@ -468,25 +472,26 @@ $(function() { // DOCUMENT READY
   // event handler for the alphabetical index letters
   $(document).on('click','.pagination > li > a',
       function(event) {
-        $.ajaxQ.abortAll();
+        $.ajaxQ.abortSidebarQueries();
         if ($('.alphabet-header').length === 0) {
           alpha_complete = false;
           var $content = $('.sidebar-grey');
           $content.empty().prepend(spinner);
-          var targetUrl = event.target.href;
+          var targetUrl = event.currentTarget.href;
           $.ajax({
             url : targetUrl,
+            req_kind: $.ajaxQ.requestKind.SIDEBAR,
             success : function(data) {
               updateSidebar(data);
               $('.nav').scrollTop(0);
-              if (window.history.pushState) { window.history.pushState({}, null, encodeURI(event.target.href)); }
+              if (window.history.pushState) { window.history.pushState({}, null, encodeURI(event.currentTarget.href)); }
               updateTitle(data);
               // take the content language buttons from the response
               $('.header-float .dropdown-menu').empty().append($('.header-float .dropdown-menu', data).html());
             }
           });
         } else {
-          var selectedLetter = $(event.target).text().trim();
+          var selectedLetter = $(event.currentTarget).find("span:last-child").text().trim();
           if (document.getElementsByName(selectedLetter).length === 0) { return false; }
           var offset = $('li[name=' + selectedLetter + ']').offset().top - $('body').offset().top - 5;
           $('.nav').scrollTop(offset);
@@ -497,7 +502,7 @@ $(function() { // DOCUMENT READY
 
   // Event handlers for the language selection links for setting the cookie
   $('#language a').each( function(index, el) {
-    $(el).click(function() {
+    $(el).on('click', function() {
       var langCode = el.id.substr(el.id.indexOf("-") + 1);
       setLangCookie(langCode);
     });
@@ -505,20 +510,26 @@ $(function() { // DOCUMENT READY
 
   var qtip_skosmos = {
     position: { my: 'top center', at: 'bottom center' },
-    style: { classes: 'qtip-tipsy qtip-skosmos' }
+    style: { classes: 'qtip-tipsy qtip-skosmos' },
+    show: {
+      event: 'mouseenter focusin'
+    },
+    hide: {
+      event: 'mouseleave focusout'
+    }
   };
 
   var qtip_skosmos_hierarchy = {
     position: { my: 'top left', at: 'bottom center' },
     style: { classes: 'qtip-tipsy qtip-skosmos' }
   };
-  
+
   $('#navi4').qtip(qtip_skosmos);
 
   $('.property-click').qtip(qtip_skosmos);
 
   $('.redirected-vocab-id').qtip(qtip_skosmos);
-  
+
   $('.reified-property-value').each(function() {
     $(this).qtip({
       content: $(this).next('.reified-tooltip'),
@@ -536,9 +547,6 @@ $(function() { // DOCUMENT READY
 
   // Setting the language parameters according to the clang parameter or if that's not possible the cookie.
   var search_lang = (content_lang !== '' && !getUrlParams().anylang && vocab !== '') ? content_lang : readCookie('SKOSMOS_SEARCH_LANG');
-  if (vocab === '' && readCookie('SKOSMOS_SEARCH_LANG') === 'anything') {
-    $('#all-languages-true').click();
-  }
 
   var rest_url = rest_base_url;
   if (rest_url.indexOf('..') === -1 && rest_url.indexOf('http') === -1) { rest_url = encodeURI(location.protocol + '//' + rest_url); }
@@ -558,10 +566,6 @@ $(function() { // DOCUMENT READY
       if (!langPretty) { langPretty = $('.lang-button-all').html(); }
       $('#lang-dropdown-toggle').html(langPretty + ' <span class="caret"></span>');
       qlang = lang;
-  } else {
-      langPretty = $('a[hreflang=' + search_lang + ']').html();
-      if (!langPretty) { langPretty = $('a[hreflang=""]').html(); }
-      $('#lang-dropdown-toggle').html(langPretty + ' <span class="caret"></span>');
   }
 
   var search_lang_possible = false;
@@ -576,17 +580,15 @@ $(function() { // DOCUMENT READY
     createCookie('SKOSMOS_SEARCH_LANG', qlang, 365);
   }
 
-  $('.lang-button').click(function() {
+  $('.lang-button').on('click', function() {
     qlang = $(this)[0].attributes.hreflang ? $(this)[0].attributes.hreflang.value : 'anything';
-    var any = (qlang === 'anything') ? '1' : '0';
     $('#lang-dropdown-toggle').html($(this).html() + ' <span class="caret"></span>');
     $('#lang-input').val(qlang);
     createCookie('SKOSMOS_SEARCH_LANG', qlang, 365);
-    createCookie('SKOSMOS_ANYLANG', any, 365);
     if (concepts) { concepts.clear(); }
   });
 
-  $('.lang-button, .lang-button-all').click(function() {
+  $('.lang-button, .lang-button-all').on('click', function() {
     $('#search-field').focus();
   });
 
@@ -596,7 +598,7 @@ $(function() { // DOCUMENT READY
   }
 
   // disables the button with an empty search form
-  $('#search-field').keyup(function() {
+  $('#search-field').on('keyup', function() {
     var empty = false;
     $('#search-field').each(function() {
       if ($(this).val().length === 0) { empty = true; }
@@ -654,9 +656,15 @@ $(function() { // DOCUMENT READY
   } else { // if not then ajax the rest api and cache the results.
     var typeParam = $.param({'lang' : lang });
     var typeUrl = rest_base_url + 'types';
-    $.getJSON(typeUrl, typeParam, function(response) {
-      lscache.set('types:' + lang, response, 1440);
-      processTypeJSON(response);
+    $.ajax({
+      dataType: 'json',
+      url: typeUrl,
+      req_kind: $.ajaxQ.requestKind.GLOBAL,
+      data: typeParam,
+      success: function(response) {
+        lscache.set('types:' + lang, response, 1440);
+        processTypeJSON(response);
+      }
     });
   }
 
@@ -678,6 +686,7 @@ $(function() { // DOCUMENT READY
             parameters = $.param({'vocab' : vocabString, 'lang' : '', 'labellang' : ''});
           }
           settings.url = settings.url + '&' + parameters;
+          settings.req_kind = $.ajaxQ.requestKind.GLOBAL;
         }
       },
       // changes the response so it can be easily displayed in the handlebars template.
@@ -771,7 +780,7 @@ $(function() { // DOCUMENT READY
         source: concepts.ttAdapter()
     }).on('typeahead:cursorchanged', function() {
       $('.tt-dropdown-menu').mCustomScrollbar("scrollTo", '.tt-cursor');
-    }).on('typeahead:selected', onSelection).bind('focus', function() {
+    }).on('typeahead:selected', onSelection).on('focus', function() {
       $('#search-field').typeahead('open');
     }).after(clearButton).on('keypress', function() {
       if ($typeahead.val().length > 0 && $(this).hasClass('clear-search-dark') === false) {
@@ -803,25 +812,25 @@ $(function() { // DOCUMENT READY
   });
 
   // Some form validation for the feedback form
-  $("#send-feedback").click(function() {
-      $('#email').removeClass('missing-value');
+  $('#send-feedback').on('click', function() {
       $('#message').removeClass('missing-value');
+      $('#msgsubject').removeClass('missing-value');
       var emailMessageVal = $("#message").val();
-      var emailAddress = $("#email").val();
+      var emailSubject = $("#msgsubject").val();
       var requiredFields = true;
-      if (emailAddress !== '' && emailAddress.indexOf('@') === -1) {
-        $("#email").addClass('missing-value');
-        requiredFields = false;
-      }
       if (emailMessageVal === '') {
         $("#message").addClass('missing-value');
+        requiredFields = false;
+      }
+      if (emailSubject === '') {
+        $("#msgsubject").addClass('missing-value');
         requiredFields = false;
       }
       return requiredFields;
   });
 
   // Initializes the waypoints plug-in used for the search listings.
-  var $loading = $("<p>" + loading_text + "&hellip;<span class='spinner'/></p>");
+  var $loading = $("<p>" + loading_text + "&hellip;<span class='spinner'></span></p>");
   var $trigger = $('.search-result:nth-last-of-type(6)');
   var options = { offset : '100%', continuous: false, triggerOnce: true };
   var alpha_complete = false;
@@ -835,19 +844,21 @@ $(function() { // DOCUMENT READY
       $('.search-result-listing').append($ready);
     }
     else {
-      $trigger.waypoint(function() { waypointCallback(); }, options);
+      $trigger.waypoint(function() { waypointCallback(this); }, options);
     }
   }
 
   function alphaWaypointCallback() {
     // if the pagination is not visible all concepts are already shown
     if (!alpha_complete && $('.pagination').length === 1) {
+      $.ajaxQ.abortSidebarQueries();
       alpha_complete = true;
       $('.alphabetical-search-results').append($loading);
       var parameters = $.param({'offset' : 250, 'clang': content_lang});
-      var letter = '/' + ($('.pagination > .active')[0] ? $('.pagination > .active > a')[0].innerHTML : $('.pagination > li > a')[0].innerHTML);
+      var letter = '/' + ($('.pagination > .active')[0] ? $('.pagination > .active > a > span:last-child')[0].innerHTML : $('.pagination > li > a > span:last-child')[0].innerHTML);
       $.ajax({
         url : vocab + '/' + lang + '/index' + letter,
+        req_kind: $.ajaxQ.requestKind.SIDEBAR,
         data : parameters,
         success : function(data) {
           $loading.detach();
@@ -861,17 +872,19 @@ $(function() { // DOCUMENT READY
   var changeOffset = 200;
 
   function changeListWaypointCallback() {
+    $.ajaxQ.abortSidebarQueries();
     $('.change-list').append($loading);
     var parameters = $.param({'offset' : changeOffset, 'clang': content_lang});
-    var lastdate = $('.change-list > span:last-of-type')[0].innerHTML;
+    var lastdate = $('.change-list > h5:last-of-type')[0].innerHTML;
     $.ajax({
       url : vocab + '/' + lang + '/new',
+      req_kind: $.ajaxQ.requestKind.SIDEBAR,
       data : parameters,
       success : function(data) {
         $loading.detach();
         if ($(data).find('.change-list').length === 1) {
           $('.change-list').append($(data).find('.change-list')[0].innerHTML);
-          var $lastdate = $('.change-list > span:contains(' + lastdate + ')');
+          var $lastdate = $('.change-list > h5:contains(' + lastdate + ')');
           if ($lastdate.length === 2)
            $lastdate[1].remove();
           $('.change-list > p:last-of-type').remove();
@@ -881,9 +894,13 @@ $(function() { // DOCUMENT READY
     changeOffset += 200;
   }
 
-  function waypointCallback() {
+  function waypointCallback(waypoint) {
+    if ($('.search-result-listing > p .spinner,.search-result-listing .alert-danger').length > 0) {
+      return false;
+    }
     var number_of_hits = $(".search-result").length;
-    if (number_of_hits < parseInt($('.search-count p').text().substr(0, $('.search-count p').text().indexOf(' ')), 10)) { $('.search-result-listing').append($loading);
+    if (number_of_hits < parseInt($('.search-count p').text().substr(0, $('.search-count p').text().indexOf(' ')), 10)) {
+      $('.search-result-listing').append($loading);
       var typeLimit = $('#type-limit').val();
       var schemeLimit = $('#scheme-limit').val();
       var groupLimit = $('#group-limit').val();
@@ -891,6 +908,7 @@ $(function() { // DOCUMENT READY
       var parameters = $.param({'q' : searchTerm, 'vocabs' : vocabSelectionString, 'offset' : offcount * waypoint_results, 'clang' : content_lang, 'type' : typeLimit, 'group' : groupLimit, 'parent': parentLimit, anylang: getUrlParams().anylang, 'scheme' : schemeLimit });
       $.ajax({
         url : window.location.pathname,
+        req_kind: $.ajaxQ.requestKind.GLOBAL,
         data : parameters,
         success : function(data) {
           $loading.detach();
@@ -903,7 +921,20 @@ $(function() { // DOCUMENT READY
             $('.search-result-listing').append($ready);
             return false;
           }
-          $('.search-result:nth-last-of-type(4)').waypoint(function() { waypointCallback(); }, options );
+          waypoint.destroy();
+          $('.search-result:nth-last-of-type(4)').waypoint(function() { waypointCallback(this); }, options );
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          $loading.detach();
+          var $failedSearch = $('<div class="alert alert-danger"><h4>' + loading_failed_text + '</h4></div>');
+          var $retryButton = $('<button class="btn btn-default" type="button">' + loading_retry_text + '</button>');
+          $retryButton.on('click', function () {
+            $failedSearch.remove();
+            waypointCallback(waypoint);
+            return false;
+          });
+          $failedSearch.append($retryButton)
+          $('.search-result-listing').append($failedSearch);
         }
       });
     }
@@ -1025,12 +1056,12 @@ $(function() { // DOCUMENT READY
    */
   var $replaced = $('.replaced-by a');
   if ($replaced.length > 0) {
-    var $replacedSpan = $('.replaced-by span');
-    var undoUppercasing = $replacedSpan.text().substr(0,1) + $replacedSpan.text().substr(1).toLowerCase();
+    var $replacedElem = $('.replaced-by h3');
+    var undoUppercasing = $replacedElem.text().substr(0,1) + $replacedElem.text().substr(1).toLowerCase();
     var html = ''
     for (var i = 0; i < $replaced.length; i++) {
         var replacedBy = '<a href="' + $replaced[i] + '">' + $replaced[i].innerHTML + '</a>';
-        html += '<h2 class="alert-replaced">' + undoUppercasing + ': ' + replacedBy + '</h2>';
+        html += '<p class="alert-replaced">' + undoUppercasing + ': ' + replacedBy + '</p>';
     }
     $('.alert-danger').append(html);
     $(document).on('click', '#groups',
@@ -1042,14 +1073,15 @@ $(function() { // DOCUMENT READY
   }
 
   /* makes an AJAX query for the alphabetical index contents when landing on
-   * the vocabulary home page.
+   * the vocabulary home page or on the vocabulary concept error page.
    */
-  if ($('#alpha').hasClass('active') && $('#vocab-info').length === 1 && $('.alphabetical-search-results').length === 0) {
+  if ($('#alpha').hasClass('active') && $('#vocab-info,.page-alert').length == 1 && $('.alphabetical-search-results').length == 0) {
     // taking into account the possibility that the lang parameter has been changed by the WebController.
     var urlLangCorrected = vocab + '/' + lang + '/index?limit=250&offset=0&clang=' + clang;
-    $('.sidebar-grey').empty().append('<div class="loading-spinner"><span class="spinner-text">'+ loading_text + '</span><span class="spinner" /></div>');
+    $('.sidebar-grey').empty().append('<div class="loading-spinner"><span class="spinner-text">'+ loading_text + '</span><span class="spinner"></span></div>');
     $.ajax({
       url : urlLangCorrected,
+      req_kind: $.ajaxQ.requestKind.SIDEBAR,
       success : function(data) {
         $('#sidebar').replaceWith($(data).find('#sidebar'));
       }
@@ -1100,13 +1132,10 @@ $(function() { // DOCUMENT READY
         source: concepts.ttAdapter()
     }).on('typeahead:cursorchanged', function() {
       $('.tt-dropdown-menu').mCustomScrollbar("scrollTo", '.tt-cursor');
-    }).on('typeahead:selected', onSelection).bind('focus', function() {
+    }).on('typeahead:selected', onSelection).on('focus', function() {
       $('#search-field').typeahead('open');
     });
   }
-
-  // setting the focus to the search box on default if we are not on the search results page
-  if ($('.search-result-listing').length === 0) { $("#search-field").focus(); }
 
   if ($('#feedback-vocid').length) {
     $('#feedback-fields > .dropdown > .dropdown-menu > li > a').each(function(index, elem) {

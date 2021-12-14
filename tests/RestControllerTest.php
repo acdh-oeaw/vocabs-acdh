@@ -15,7 +15,8 @@ class RestControllerTest extends \PHPUnit\Framework\TestCase
    * @var RestController
    */
   private $controller;
-  protected function setUp() {
+  protected function setUp() : void
+  {
     putenv("LANGUAGE=en_GB.utf8");
     putenv("LC_ALL=en_GB.utf8");
     setlocale(LC_ALL, 'en_GB.utf8');
@@ -28,7 +29,8 @@ class RestControllerTest extends \PHPUnit\Framework\TestCase
     $this->controller = new RestController($this->model);
   }
 
-  protected function tearDown() {
+  protected function tearDown() : void
+  {
     ob_clean();
   }
 
@@ -420,4 +422,59 @@ EOD;
     $this->assertJsonStringEqualsJsonString($changeList, $expected);
 
  }
+
+  /**
+   * @covers RestController::vocabularyStatistics
+   */
+  public function testVocabularyStatistics() {
+    $request = new Request($this->model);
+    $request->setVocab('test');
+    $request->setLang('en');
+
+    $this->controller->vocabularyStatistics($request);
+    $statistics = $this->getActualOutput();
+    $expected = <<<EOD
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "void": "http://rdfs.org/ns/void#",
+    "onki": "http://schema.onki.fi/onki#",
+    "uri": "@id",
+    "id": "onki:vocabularyIdentifier",
+    "concepts": "void:classPartition",
+    "label": "rdfs:label",
+    "class": {
+      "@id": "void:class",
+      "@type": "@id"
+    },
+    "subTypes": {
+      "@id": "void:class",
+      "@type": "@id"
+    },
+    "count": "void:entities",
+    "@language": "en",
+    "@base": "http://tests.localhost/Skosmos/rest/v1/test/"
+  },
+  "uri": "",
+  "id": "test",
+  "title": "Test ontology",
+  "concepts": {
+    "class": "http://www.w3.org/2004/02/skos/core#Concept",
+    "label": "Concept",
+    "count": 18,
+    "deprecatedCount": 1
+  },
+  "subTypes": [
+    {
+      "type": "http://www.skosmos.skos/test-meta/TestClass",
+      "count": 13,
+      "deprecatedCount": 1,
+      "label": "Test class"
+    }
+  ]
+}
+EOD;
+    $this->assertJsonStringEqualsJsonString($statistics, $expected);
+  }
 }

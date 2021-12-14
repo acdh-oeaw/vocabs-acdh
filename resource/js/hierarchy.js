@@ -43,6 +43,10 @@ function invokeParentTree(tree) {
     if ($('#sidebar .mCustomScrollbar').length === 0) {
       $sidebarGrey.mCustomScrollbar(hierTreeConf);
     }
+    // fix a bug causing throbber.gif not showing whilst ajaxing
+    // TODO: a good fix would mean fixing the underlying DOM structure
+    $('.jstree-container-ul').parent().addClass('jstree-default');
+
     var $leafProper = $('.jstree-leaf-proper');
     if ($leafProper.length > 0) {
       $sidebarGrey.jstree('select_node', $leafProper.toArray());
@@ -69,9 +73,9 @@ function getLabel(object) {
     labelProp = 'label';
   }
   if (window.showNotation && object.notation) {
-    return '<span class="tree-notation">' + object.notation + '</span> ' + object[labelProp];
+    return '<span class="tree-notation">' + object.notation + '</span> <span class="tree-label">' + escapeHtml(object[labelProp]) + '</span>';
   }
-  return escapeHtml(object[labelProp]);
+  return '<span class="tree-label">' + escapeHtml(object[labelProp]) + '</span>';
 }
 
 function createObjectsFromChildren(conceptData, conceptUri) {
@@ -79,7 +83,7 @@ function createObjectsFromChildren(conceptData, conceptUri) {
   for (var i = 0; i < conceptData.narrower.length; i++) {
     var childObject = {
       text: getLabel(conceptData.narrower[i]), 
-      a_attr: getConceptHref(conceptData.narrower[i]),
+      a_attr: getHrefForUri(conceptData.narrower[i].uri),
       uri: conceptData.narrower[i].uri,
       notation: conceptData.narrower[i].notation,
       parents: conceptUri,
@@ -105,7 +109,7 @@ function createObjectsFromChildren(conceptData, conceptUri) {
 function createConceptObject(conceptUri, conceptData) {
   var newNode = { 
     text: getLabel(conceptData), 
-    a_attr: getConceptHref(conceptData),
+    a_attr: getHrefForUri(conceptData.uri),
     uri: conceptUri,
     notation: conceptData.notation,
     parents: conceptData.broader,
@@ -201,27 +205,13 @@ function buildParentTree(uri, parentData, schemes) {
   return JSON.parse(JSON.stringify(rootArray));
 }
 
-function getConceptHref(conceptData) {
-  if (conceptData.uri.indexOf(window.uriSpace) !== -1) {
-    var page = conceptData.uri.substr(window.uriSpace.length);
-    if (/[^a-zA-Z0-9\.]/.test(page) || page.indexOf("/") > -1 ) {
-      // contains special characters or contains an additional '/' - fall back to full URI
-      page = '?uri=' + encodeURIComponent(conceptData.uri);
-    }
-  } else {
-    // not within URI space - fall back to full URI
-    page = '?uri=' + encodeURIComponent(conceptData.uri);
-  }
-  return { "href" : vocab + '/' + lang + '/page/' + page };
-}
-
 function vocabRoot(topConcepts) {
   var topArray = [];
   for (var i = 0; i < topConcepts.length; i++) {
     var conceptData = topConcepts[i];
     var childObject = {
       text: conceptData.label, 
-      a_attr : getConceptHref(conceptData),
+      a_attr : getHrefForUri(conceptData.uri),
       uri: conceptData.uri,
       notation: conceptData.notation,
       state: { opened: false } 
@@ -269,7 +259,7 @@ function createObjectsFromNarrowers(narrowerResponse) {
     var conceptObject = narrowerResponse.narrower[i];
     var childObject = {
       text : getLabel(conceptObject), 
-      a_attr : getConceptHref(conceptObject),
+      a_attr : getHrefForUri(conceptObject.uri),
       uri: conceptObject.uri,
       notation: conceptObject.notation,
       parents: narrowerResponse.uri,
@@ -288,34 +278,108 @@ function getParams(node) {
   return $.param({'uri' : nodeId, 'lang' : clang});
 }
 
-function pickLabelFromScheme(scheme) {
+function pickLabel(entity) {
   var label = '';
-  if (scheme.prefLabel)
-    label = scheme.prefLabel;
-  else if (scheme.label)
-    label = scheme.label;
-  else if (scheme.title)
-    label = scheme.title;
+  if (entity.prefLabel)
+    label = entity.prefLabel;
+  else if (entity.label)
+    label = entity.label;
+  else if (entity.title)
+    label = entity.title;
   return label;
 }
 
 function schemeRoot(schemes) {
   var topArray = [];
+
+  // Step 1 : gather domain list
+  var domains=[];
+
   for (var i = 0; i < schemes.length; i++) {
-    var scheme = schemes[i];
-    var label = pickLabelFromScheme(scheme);
-    if (label !== '') { // hiding schemes without a label/title
-      var schemeObject = {
-        text: label, 
-        a_attr : { "href" : vocab + '/' + lang + '/page/?uri=' + scheme.uri, 'class': 'scheme'},
-        uri: scheme.uri,
-        notation: scheme.notation,
-        children: true,
-        state: { opened: false } 
-      };
-      topArray.push(schemeObject);
+    // iterate on schemes subjects...
+    if(schemes[i].subject != null) {
+      var schemeDomain = schemes[i].subject.uri;
+
+      // test if domain was already found  
+      var found = false;
+      for (var k = 0; k < domains.length; k++) {
+        if(domains[k].uri===schemeDomain){
+          found = true;
+          break;
+        }
+      }
+
+      // if not found, store it in domain list
+      if(!found) {
+        domains.push(schemes[i].subject);
+      }
     }
   }
+
+  // Step 2 : create tree nodes for each domain
+  for (var i = 0; i < domains.length; i++) {
+    var theDomain = domains[i];
+    var theDomainLabel = pickLabel(theDomain);
+
+    // avoid creating entries with empty labels
+    if(theDomainLabel != '') {
+      // Step 2.1 : create domain node without children
+      var domainObject = {
+        text: theDomainLabel, 
+        // note that the class 'domain' will make sure the node will be sorted _before_ others
+        // (see the 'sort' function at the end)
+        a_attr : { "href" : vocab + '/' + lang + '/page/?uri=' + theDomain.uri, 'class': 'domain'},
+        uri: theDomain.uri,
+        children: [],
+        state: { opened: false } 
+      };
+
+      // Step 2.2 : find the concept schemes in this domain and add them as children
+      for (var k = 0; k < schemes.length; k++) {
+        var theScheme = schemes[k];
+        var theSchemeLabel = pickLabel(theScheme);
+
+        // avoid creating entries with empty labels
+        if(theSchemeLabel != '') { 
+          if((theScheme.subject) != null && (theScheme.subject.uri===theDomain.uri)) {
+            domainObject.children.push(
+            {
+              text: theSchemeLabel,
+              a_attr:{ "href" : vocab + '/' + lang + '/page/?uri=' + theScheme.uri, 'class': 'scheme'},
+              uri: theScheme.uri,
+              children: true,
+              state: { opened: false } 
+            }
+            );
+          }
+        }
+      } // end iterating on schemes
+
+      topArray.push(domainObject); 
+    }
+  } // end iterating on domains
+
+  // Step 3 : add the schemes without any subjects after the subjects node
+  for (var k = 0; k < schemes.length; k++) {
+    var theScheme = schemes[k]; 
+
+    if(theScheme.subject == null) {     
+      // avoid creating entries with empty labels
+      var theSchemeLabel = pickLabel(theScheme);
+      if(theSchemeLabel != '') {      
+        topArray.push(
+            {
+              text:theSchemeLabel,
+              a_attr:{ "href" : vocab + '/' + lang + '/page/?uri=' + theScheme.uri, 'class': 'scheme'},
+              uri: theScheme.uri,
+              children: true,
+              state: { opened: false } 
+            }
+        );
+      }
+    }
+  }
+
   return topArray;
 }
 
@@ -340,7 +404,7 @@ function topConceptsToSchemes(topConcepts, schemes) {
     var hasChildren = topConcept.hasChildren; 
     var childObject = {
       text : getLabel(topConcept), 
-      a_attr : { "href" : vocab + '/' + lang + '/page/?uri=' + encodeURIComponent(topConcept.uri) },
+      a_attr: getHrefForUri(topConcept.uri),
       uri: topConcept.uri,
       notation: topConcept.notation,
       state: { opened: false, disabled: false, selected: false }
@@ -357,6 +421,22 @@ function topConceptsToSchemes(topConcepts, schemes) {
     }
   }
   return childArray;
+}
+
+/*
+ * Return a sort key suitable for sorting hierarchy nodes mainly by label.
+ * Nodes with domain class will be sorted first, followed by non-domain nodes.
+ */
+function nodeLabelSortKey(node) {
+  // make sure the tree nodes with class 'domain' are sorted before the others
+  // domain will be "0" if the node has a domain class, else "1"
+  var domain = (node.original.a_attr['class'] == 'domain') ? "0" : "1";
+
+  // parse the HTML code in node.text and return just the label as a lower case value for sorting
+  // should look like '<span class="tree-notation">12.3</span> <span class="tree-label">Hello</span>'
+  var label = $(node.text.toLowerCase()).filter('.tree-label').text();
+
+  return domain + " " + label;
 }
 
 /* 
@@ -378,6 +458,7 @@ function getTreeConfiguration() {
           $.ajax({
             data: $.param({'lang': clang}),
             url: rest_base_url + vocab + '/',
+            req_kind: $.ajaxQ.requestKind.SIDEBAR_PRIVILEGED,
             success: function (response) {
               schemeObjects = schemeRoot(response.conceptschemes);
               // if there are multiple concept schemes display those at the top level
@@ -388,6 +469,7 @@ function getTreeConfiguration() {
               else if(node.id === '#' && $('#vocab-info').length) { 
                 $.ajax({
                   data: $.param({'lang': clang}),
+                  req_kind: $.ajaxQ.requestKind.SIDEBAR_PRIVILEGED,
                   url: rest_base_url + vocab + '/topConcepts', 
                   success: function (response) {
                     return cb(vocabRoot(response.topconcepts));
@@ -420,6 +502,7 @@ function getTreeConfiguration() {
                 $.ajax({
                   data: params,
                 url: json_url, 
+                req_kind: $.ajaxQ.requestKind.SIDEBAR_PRIVILEGED,
                 success: function (response) {
                   if (response.broaderTransitive) { // the default hierarchy query that fires when a page loads.
                     return cb(buildParentTree(nodeId, response.broaderTransitive, schemeObjects));
@@ -440,24 +523,31 @@ function getTreeConfiguration() {
         var aNode = this.get_node(a);
         var bNode = this.get_node(b);
 
-        if (window.showNotation) {
+        // sort on notation if requested, and notations exist
+        if (window.sortByNotation) {
             var aNotation = aNode.original.notation;
             var bNotation = bNode.original.notation;
 
             if (aNotation) {
                 if (bNotation) {
-                    if (aNotation < bNotation) {
-                        return -1;
-                    }
-                    else if (aNotation > bNotation) {
-                        return 1;
+                    if (window.sortByNotation == "lexical") {
+                        if (aNotation < bNotation) {
+                            return -1;
+                        }
+                        else if (aNotation > bNotation) {
+                            return 1;
+                        }
+                    } else { // natural
+                        return naturalCompare(aNotation, bNotation);
                     }
                 }
                 else return -1;
             }
             else if (bNotation) return 1;
+            // NOTE: if no notations found, fall back on label comparison below
         }
-        return naturalCompare(aNode.text.toLowerCase(), bNode.text.toLowerCase());
+        // no sorting on notation requested, or notations don't exist
+        return naturalCompare(nodeLabelSortKey(aNode), nodeLabelSortKey(bNode));
     }
   });
 }

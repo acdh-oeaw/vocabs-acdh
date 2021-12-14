@@ -16,6 +16,7 @@ class Concept extends VocabularyDataObject implements Modifiable
     /** the EasyRdf\Graph object of the concept */
     private $graph;
     private $clang;
+    private $deleted;
 
     /** concept properties that should not be shown to users */
     private $DELETED_PROPERTIES = array(
@@ -78,18 +79,18 @@ class Concept extends VocabularyDataObject implements Modifiable
     public function __construct($model, $vocab, $resource, $graph, $clang)
     {
         parent::__construct($model, $vocab, $resource);
+        $this->deleted = $this->DELETED_PROPERTIES;
         if ($vocab !== null) {
             $this->order = $vocab->getConfig()->getPropertyOrder();
+            // delete notations unless configured to show them
+            if (!$vocab->getConfig()->getShowNotationAsProperty()) {
+                $this->deleted[] = 'skos:notation';
+            }
         } else {
             $this->order = VocabularyConfig::DEFAULT_PROPERTY_ORDER;
         }
         $this->graph = $graph;
         $this->clang = $clang;
-        // setting the Punic plugins locale for localized datetime conversions
-        if ($this->clang && $this->clang !== '') {
-            Punic\Data::setDefaultLocale($clang);
-        }
-
     }
 
     /**
@@ -441,14 +442,14 @@ class Concept extends VocabularyDataObject implements Modifiable
                             }
 
                             if ($response) {
-                                $ret[$prop]->addValue(new ConceptMappingPropertyValue($this->model, $this->vocab, $response, $this->resource, $prop), $this->clang);
+                                $ret[$prop]->addValue(new ConceptMappingPropertyValue($this->model, $this->vocab, $response, $this->resource, $prop));
 
                                 $this->processExternalResource($response);
 
                                 continue;
                             }
                         }
-                        $ret[$prop]->addValue(new ConceptMappingPropertyValue($this->model, $this->vocab, $val, $this->resource, $prop, $this->clang), $this->clang);
+                        $ret[$prop]->addValue(new ConceptMappingPropertyValue($this->model, $this->vocab, $val, $this->resource, $prop, $this->clang));
                     }
                 }
             }
@@ -513,7 +514,7 @@ class Concept extends VocabularyDataObject implements Modifiable
                 $sprop = "<$prop>";
             }
 
-            if (!in_array($prop, $this->DELETED_PROPERTIES) || ($this->isGroup() === false && $prop === 'skos:member')) {
+            if (!in_array($prop, $this->deleted) || ($this->isGroup() === false && $prop === 'skos:member')) {
                 // retrieve property label and super properties from the current vocabulary first
                 $propres = new EasyRdf\Resource($prop, $this->graph);
                 $proplabel = $propres->label($this->getEnvLang()) ? $propres->label($this->getEnvLang()) : $propres->label();
@@ -563,7 +564,7 @@ class Concept extends VocabularyDataObject implements Modifiable
                 if ($superprop) {
                     $superprop = EasyRdf\RdfNamespace::shorten($superprop) ? EasyRdf\RdfNamespace::shorten($superprop) : $superprop;
                 }
-                $sort_by_notation = $this->vocab->getConfig()->sortByNotation();
+                $sort_by_notation = $this->vocab->getConfig()->getSortByNotation();
                 $propobj = new ConceptProperty($prop, $proplabel, $prophelp, $superprop, $sort_by_notation);
 
                 if ($propobj->getLabel() !== null) {
@@ -582,11 +583,10 @@ class Concept extends VocabularyDataObject implements Modifiable
                 // Iterating through every literal and adding these to the data object.
                 foreach ($this->resource->allLiterals($sprop) as $val) {
                     $literal = new ConceptPropertyValueLiteral($this->model, $this->vocab, $this->resource, $val, $prop);
-                    // only add literals when they match the content/hit language or have no language defined
-                    if (isset($ret[$prop]) && ($literal->getLang() === $this->clang || $literal->getLang() === null)) {
+                    // only add literals when they match the content/hit language or have no language defined OR when they are literals of a multilingual property
+                    if (isset($ret[$prop]) && ($literal->getLang() === $this->clang || $literal->getLang() === null) || $this->vocab->getConfig()->hasMultiLingualProperty($prop)) {
                         $ret[$prop]->addValue($literal);
                     }
-
                 }
 
                 // Iterating through every resource and adding these to the data object.
@@ -609,7 +609,7 @@ class Concept extends VocabularyDataObject implements Modifiable
                     if (isset($ret[$prop])) {
                         // create a ConceptPropertyValue first, assuming the resource exists in current vocabulary
                         $value = new ConceptPropertyValue($this->model, $this->vocab, $val, $prop, $this->clang);
-                        $ret[$prop]->addValue($value, $this->clang);
+                        $ret[$prop]->addValue($value);
                     }
 
                 }
@@ -618,14 +618,14 @@ class Concept extends VocabularyDataObject implements Modifiable
         // adding narrowers part of a collection
         foreach ($properties as $prop => $values) {
             foreach ($values as $value) {
-                $ret[$prop]->addValue($value, $this->clang);
+                $ret[$prop]->addValue($value);
             }
         }
 
         $groupPropObj = new ConceptProperty('skosmos:memberOf', null);
         foreach ($this->getGroupProperties() as $propVals) {
             foreach ($propVals as $propVal) {
-                $groupPropObj->addValue($propVal, $this->clang);
+                $groupPropObj->addValue($propVal);
             }
         }
         $ret['skosmos:memberOf'] = $groupPropObj;
@@ -633,7 +633,7 @@ class Concept extends VocabularyDataObject implements Modifiable
         $arrayPropObj = new ConceptProperty('skosmos:memberOfArray', null);
         foreach ($this->getArrayProperties() as $propVals) {
             foreach ($propVals as $propVal) {
-                $arrayPropObj->addValue($propVal, $this->clang);
+                $arrayPropObj->addValue($propVal);
             }
         }
         $ret['skosmos:memberOfArray'] = $arrayPropObj;
@@ -651,8 +651,8 @@ class Concept extends VocabularyDataObject implements Modifiable
 
     /**
      * Removes properties that have duplicate values.
-     * @param $ret the array of properties generated by getProperties
-     * @param $duplicates array of properties found are a subProperty of a another property
+     * @param array $ret the array of properties generated by getProperties
+     * @param array $duplicates array of properties found are a subProperty of a another property
      * @return array of ConceptProperties
      */
     public function removeDuplicatePropertyValues($ret, $duplicates)
@@ -734,14 +734,14 @@ class Concept extends VocabularyDataObject implements Modifiable
 
             // making a human readable string from the timestamps
             if ($created != '') {
-                $ret = gettext('skosmos:created') . ' ' . (Punic\Calendar::formatDate($created, 'short'));
+                $ret = gettext('skosmos:created') . ' ' . (Punic\Calendar::formatDate($created, 'short', $this->getEnvLang()));
             }
 
             if ($modified != '') {
                 if ($created != '') {
-                    $ret .= ', ' . gettext('skosmos:modified') . ' ' . (Punic\Calendar::formatDate($modified, 'short'));
+                    $ret .= ', ' . gettext('skosmos:modified') . ' ' . (Punic\Calendar::formatDate($modified, 'short', $this->getEnvLang()));
                 } else {
-                    $ret .= ' ' . ucfirst(gettext('skosmos:modified')) . ' ' . (Punic\Calendar::formatDate($modified, 'short'));
+                    $ret .= ' ' . ucfirst(gettext('skosmos:modified')) . ' ' . (Punic\Calendar::formatDate($modified, 'short', $this->getEnvLang()));
                 }
 
             }
@@ -912,6 +912,7 @@ class Concept extends VocabularyDataObject implements Modifiable
     /**
      * Gets the values for the property in question in all other languages than the ui language.
      * @param string $property
+     * @return array array of labels for the values of the given property
      */
     public function getAllLabels($property)
     {
