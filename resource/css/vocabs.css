@@ -174,7 +174,8 @@ p.lead a {
 
 }
 
-div#about {
+.content > #about, div#about {
+    max-width: 100%;
     width: 100% !important;
 }
 

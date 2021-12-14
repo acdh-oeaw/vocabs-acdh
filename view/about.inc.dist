@@ -1,14 +1,14 @@
 {% if request.lang == 'de' %}
-    <div class="about-logo">
+    <!--<div class="about-logo">
         <h1>{% trans "Über Vocabs" %}</h1>
-    </div>
+    </div>-->
 {% else %}
-    <div class="about-logo">
+    <!--<div class="about-logo">
         <h1>{% trans "About" %}</h1>
-    </div>
+    </div>-->
 {% endif %}
 
-<div id="about">
+<div>
     <div class="about-content">
         {# This is the template for the about page. You can enter any html here and show different language versions by using the lang value in a twig conditional as demonstrated below. #}
         {% if request.lang == 'en' %}

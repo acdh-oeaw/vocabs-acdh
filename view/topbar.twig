@@ -4,7 +4,7 @@
       id="service-logo"
     {% endif %}
     {% if request.vocabid != '' or request.page == 'feedback' or request.page == 'about' %}
-      class="service-{{ request.lang }}"
+      id="service-logo" class="service-{{ request.lang }}"
     {% endif %}
     href="{{ request.lang }}/
     {%- set qClang = request.contentLang and request.contentLang != request.lang -%}
