@@ -5,53 +5,60 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix wv: <http://vocab.org/waiver/terms/norms> .
+@prefix wv: <http://vocab.org/waiver/terms/norms> .        
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix skosmos: <http://purl.org/net/skosmos#> .
 @prefix isothes: <http://purl.org/iso25964/skos-thes#> .
 @prefix mdrtype: <http://publications.europa.eu/resource/authority/dataset-type/> .
+@prefix bbt: <https://vocabs.dariah.eu/bbt/> .
+@prefix parthenos: <https://isl.ics.forth.gr/parthenos_vocabularies/> .
+@prefix gemet: <http://www.eionet.europa.eu/gemet/> .
 @prefix : <#> .
+# Newly declared namespaces by Go Sugimoto, created on 2020-02-12, updated on 2020-08-18, 2020-11-26
+# Note old and new version of SKOSMOS do not allow special charaters like - and _
+@prefix acdhdate: <https://vocabs.acdh.oeaw.ac.at/date/> .
+@prefix acdhut: <https://vocabs.acdh.oeaw.ac.at/unit_of_time/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix greg: <http://www.w3.org/ns/time/gregorian#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix aat: <http://vocab.getty.edu/aat/> .
+@prefix bn: <http://babelnet.org/rdf/> .
+@prefix csdbp: <http://cs.dbpedia.org/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbpedia: <http://dbpedia.org/resource/> .
+@prefix esdbpr: <http://es.dbpedia.org/resource/> .
+@prefix ogc: <http://www.opengis.net/def/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix wdtn: <http://www.wikidata.org/prop/direct-normalized/> .
+@prefix yago: <http://yago-knowledge.org/resource/> .
 
 # Skosmos main configuration
 
 :config a skosmos:Configuration ;
     # SPARQL endpoint
     # a local Fuseki server is usually on localhost:3030
-    skosmos:sparqlEndpoint <http://localhost:3030/skosmos/sparql> ;
+    skosmos:sparqlEndpoint <http://apache-jena-fuseki:3030/skosmos/sparql> ;
     # sparql-query extension, or "Generic" for plain SPARQL 1.1
     # set to "JenaText" instead if you use Fuseki with jena-text index
     skosmos:sparqlDialect "JenaText" ;
     # whether to enable collation in sparql queries
-    skosmos:sparqlCollationEnabled false ;
+    # skosmos:sparqlCollationEnabled ? ;
     # HTTP client configuration
     skosmos:sparqlTimeout 20 ;
     skosmos:httpTimeout 5 ;
     # customize the service name
-    skosmos:serviceName "Skosmos" ;
+    skosmos:serviceName "ACDH_Vocabularies" ;
     # customize the base element. Set this if the automatic base url detection doesn't work. For example setups behind a proxy.
-    # skosmos:baseHref "http://localhost/Skosmos/" ;
+    # kil(acdh-ch) 2020-09-25: be aware to add the ending trail otherwise concepts do not resolve correctly (if they are pointing to this skosmos)
+    # 2020-09-29 kil #18251: Don't use baseHref as we get the domain by the proxy
+    # skosmos:baseHref "https://vocabs.acdh.oeaw.ac.at/" ;
+    # skosmos:baseHref "https://vocabs.dariah.eu/" ;
     # interface languages available, and the corresponding system locales
     skosmos:languages (
-        [ rdfs:label "ar" ; rdf:value "ar_AE.utf8" ]
-        [ rdfs:label "da" ; rdf:value "da_DK.utf8" ]
-        [ rdfs:label "de" ; rdf:value "de_DE.utf8" ]
         [ rdfs:label "en" ; rdf:value "en_GB.utf8" ]
-        [ rdfs:label "en_US" ; rdf:value "en_US.utf8" ]
-        [ rdfs:label "es" ; rdf:value "es_ES.utf8" ]
-        [ rdfs:label "fa" ; rdf:value "fa_IR.utf8" ]
-        [ rdfs:label "fi" ; rdf:value "fi_FI.utf8" ]
-        [ rdfs:label "fr" ; rdf:value "fr_FR.utf8" ]
-        [ rdfs:label "it" ; rdf:value "it_IT.utf8" ]
-        [ rdfs:label "nb" ; rdf:value "nb_NO.utf8" ]
-        [ rdfs:label "nl" ; rdf:value "nl_NL.utf8" ]
-        [ rdfs:label "nn" ; rdf:value "nn_NO.utf8" ]
-        [ rdfs:label "pl" ; rdf:value "pl_PL.utf8" ]
-        [ rdfs:label "pt" ; rdf:value "pt_PT.utf8" ]
-        [ rdfs:label "pt_BR" ; rdf:value "pt_BR.utf8" ]
-        [ rdfs:label "ru" ; rdf:value "ru_RU.utf8" ]
-        [ rdfs:label "sv" ; rdf:value "sv_SE.utf8" ]
-        [ rdfs:label "zh" ; rdf:value "zh_CN.utf8" ]
+        [ rdfs:label "de" ; rdf:value "de_DE.utf8" ]
     ) ;
     # how many results (maximum) to load at a time on the search results page
     skosmos:searchResultsSize 20 ;
@@ -62,7 +69,7 @@
     # set to TRUE to enable logging into browser console
     skosmos:logBrowserConsole false ;
     # set to a logfile path to enable logging into log file
-    # skosmos:logFileName "" ;
+    # skosmos:logFileName "?" ;
     # a default location for Twig template rendering
     skosmos:templateCache "/tmp/skosmos-template-cache" ;
     # customize the css by adding your own stylesheet
@@ -70,7 +77,7 @@
     # default email address where to send the feedback
     skosmos:feedbackAddress "" ;
     # email address to set as the sender for feedback messages
-    skosmos:feedbackSender "" ;
+    # skosmos:feedbackSender "?" ;
     # email address to set as the envelope sender for feedback messages
     skosmos:feedbackEnvelopeSender "" ;
     # whether to display the ui language selection as a dropdown (useful for cases where there are more than 3 languages) 
@@ -84,25 +91,500 @@
 
 # Skosmos vocabularies
 
-:unesco a skosmos:Vocabulary, void:Dataset ;
-    dc:title "UNESCO Thesaurus"@en ;
-    skosmos:shortName "UNESCO";
-    dc:subject :cat_general ;
-    void:uriSpace "http://skos.um.es/unescothes/";
-    skosmos:language "en", "es", "fr", "ru";
-    skosmos:defaultLanguage "en";
-    skosmos:showTopConcepts true ;
-    skosmos:fullAlphabeticalIndex true ;
-    skosmos:groupClass isothes:ConceptGroup ;
-    void:sparqlEndpoint <http://localhost:3030/skosmos/sparql> ;
-    skosmos:sparqlGraph <http://skos.um.es/unescothes/> .
+:hsinstruments_thesaurus a skosmos:Vocabulary , void:Dataset ;
+    dc:title "Digitale Musikinstrumentensystematik nach Hornbostel & Sachs"@de ,
+        "Digital Hornbostel & Sachs Classification of Musical Instruments"@en ;
+    dc:subject :cat_music ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/hsinstruments" ;
+    skosmos:language "de" , "en" ;
+    skosmos:shortName "hsinstruments" ;
+    skosmos:showChangeList "true" ;
+    skosmos:defaultLanguage "de" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:mainConceptScheme  <https://vocabs.acdh.oeaw.ac.at/hsinstruments/ConceptScheme> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/hsinstruments/ConceptScheme> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/hsinstruments_20200511.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
 
-:stw a skosmos:Vocabulary, void:Dataset ;
-    dc:title "STW Thesaurus for Economics"@en ;
-    skosmos:shortName "STW";
+:traveldigital_thesaurus a skosmos:Vocabulary , void:Dataset ;
+    dc:title "travel!digital Thesaurus" ;
+    dc:subject :cat_culturalhistory ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/traveldigital" ;
+    skosmos:groupClass skos:Collection ;
+    skosmos:defaultLanguage "de" ;
+    skosmos:language "de","en", "fr", "es", "it", "pt", "nl", "ms", "ro", "hu", "ar", "dz", "bo", "hi", "la", "tr", "sa", "my", "si", "pi", "jv", "ta" ;
+    skosmos:shortName "traveldigital" ;
+    skosmos:showChangeList "true" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/traveldigital/ConceptScheme> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/traveldigital/ConceptScheme> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:defc_thesaurus a skosmos:Vocabulary , void:Dataset ;
+    dc:title "DEFC Thesaurus"@en , "DEFC Thesaurus"@de ;
+    dc:subject :cat_archaeology ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/defcthesaurus" ;
+    skosmos:groupClass skos:Collection ;
+    skosmos:language "en" , "de" , "la" ;
+    skosmos:shortName "defcthesaurus" ;
+    skosmos:showChangeList "true" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/defcthesaurus/DefcSchema> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/defcthesaurus/DefcSchema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/defc_thesaurus_v07.rdf> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:iad_thesaurus a skosmos:Vocabulary, void:Dataset ;
+        dc:title "Iron-Age-Danube Thesaurus";
+        dc:subject :cat_archaeology;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/iadthesaurus";
+        skosmos:defaultLanguage "en";
+        skosmos:groupClass skos:Collection;
+        skosmos:language "en", "hr", "hu", "sl", "de";
+        skosmos:shortName "iadthesaurus";
+        skosmos:showNotation "false";
+        skosmos:showTopConcepts "true";
+        skosmos:showChangeList "true" ;
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/iadthesaurus/scheme>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/iadthesaurus/scheme>;
+        void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/iad-thesaurus.rdf> ;
+        void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:iconclass a skosmos:Vocabulary, void:Dataset ;
+        dc:title "Iconclass"@en,
+                 "Iconclass"@de;
+        dc:subject :cat_culturalhistory;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/iconclass";
+        skosmos:groupClass skos:Collection;
+        skosmos:defaultLanguage "en";
+        skosmos:language "en", "de", "fi", "fr", "it";
+        skosmos:shortName "iconclass";
+        skosmos:showChangeList "false" ;
+        skosmos:showTopConcepts "true";
+        skosmos:defaultLanguageExternalResources "en";
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:mainConceptScheme <http://iconclass.org/rdf/2011/09/>;
+        skosmos:sparqlGraph <http://iconclass.org/rdf/2011/09/>;
+        void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/iconclass.rdf> ;
+        void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: 5448
+:dha_taxonomy a skosmos:Vocabulary, void:Dataset ;
+        dc:title "DHA Taxonomy";
+        dc:subject :cat_general;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/dhataxonomy";
+        skosmos:defaultLanguage "en";
+        skosmos:groupClass skos:Collection;
+        skosmos:language "en";
+        skosmos:shortName "dha";
+        skosmos:showNotation "false";
+        skosmos:showTopConcepts "true";
+        skosmos:showChangeList "true" ;
+        skosmos:fullAlphabeticalIndex "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/dhataxonomy/ConceptScheme>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/dhataxonomy/ConceptScheme>;
+        void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/dha_v2.0.rdf> ;
+        void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+
+:arche_access_restrictions a skosmos:Vocabulary, void:Dataset ;
+        dc:title "ARCHE access restrictions";
+        dc:subject :cat_arche;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions";
+        skosmos:groupClass skos:Collection;
+        skosmos:language "en", "de";
+        skosmos:shortName "archeaccessrestrictions";
+        skosmos:showChangeList "true" ;
+        skosmos:defaultLanguage "en";
+        skosmos:showTopConcepts "true";
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/Schema>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/Schema>;
+        void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archeaccessrestrictions.rdf> ;
+        void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+    
+:arche_category a skosmos:Vocabulary, void:Dataset ;
+        dc:title "ARCHE Resource Type Category";
+        dc:subject :cat_arche;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/archecategory";
+        # skosmos:groupClass skos:Collection;
+        skosmos:language "en", "de";
+        skosmos:shortName "archecategory";
+        skosmos:showChangeList "false" ;
+        skosmos:defaultLanguage "en";
+        skosmos:showTopConcepts "true";
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:fullAlphabeticalIndex "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/archecategory/Schema>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/archecategory/Schema>;
+        void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archecategory_20210726.ttl>, <https://vocabs.acdh.oeaw.ac.at/download/archecategory_20210726.rdf> ;
+        void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+    
+:arche_oaiphmsets a skosmos:Vocabulary, void:Dataset ;
+        dc:title "ARCHE OAI Sets";
+        dc:subject :cat_arche;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/archeoaisets";
+        skosmos:groupClass skos:Collection;
+        skosmos:language "en", "de";
+        skosmos:shortName "archeoaisets";
+        skosmos:showChangeList "true" ;
+        skosmos:defaultLanguage "en";
+        skosmos:showTopConcepts "true";
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/archeoaisets/Schema>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/archeoaisets/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archeoaisets.rdf> ;
+        void:sparqlEndpoint <http://jena:3030/skosmos/sparql> .
+    
+:arche_licenses a skosmos:Vocabulary, void:Dataset ;
+        dc:title "ARCHE Licenses";
+        dc:subject :cat_arche;
+        dc:type mdrtype:THESAURUS ;
+        void:uriSpace "https://vocabs.acdh.oeaw.ac.at/archelicenses";
+        skosmos:groupClass skos:Collection;
+        skosmos:language "en", "de";
+        skosmos:shortName "archelicenses";
+        skosmos:showChangeList "true" ;
+        skosmos:defaultLanguage "en";
+        skosmos:showTopConcepts "true";
+        skosmos:hasMultiLingualProperty "true";
+        skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/archelicenses/Schema>;
+        skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/archelicenses/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archelicenses.rdf> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archelicenses.ttl> ;
+        void:sparqlEndpoint <http://jena:3030/skosmos/sparql> .
+    
+:arche_lifecycle_status a skosmos:Vocabulary , void:Dataset ;
+    dc:title "ARCHE life cycle status" ;
+    dc:subject :cat_arche ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus" ;
+    skosmos:groupClass skos:Collection ;
+    skosmos:language "en", "de" ;
+    skosmos:shortName "archelifecyclestatus" ;
+    skosmos:showChangeList "true" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/archelifecyclestatus/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/archelifecyclestatus.rdf> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: 5546
+:bbt a skosmos:Vocabulary, void:Dataset ;
+    dc:title "Backbone Thesaurus" ;
+    dc:subject :cat_metathesaurus ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.dariah.eu/bbt/" ;
+    skosmos:language "en" , "el" , "de" , "fr" ;
+    skosmos:shortName "bbt" ;
+    skosmos:groupClass bbt:Facet ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:fullAlphabeticalIndex "true" ;
+    skosmos:mainConceptScheme <https://vocabs.dariah.eu/bbt/ConceptScheme/Backbone_Thesaurus> ;
+    skosmos:sparqlGraph <https://vocabs.dariah.eu/bbt/ConceptScheme/Backbone_Thesaurus> ;
+    void:dataDump <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/BBT_v1.2.4.rdf> , <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/BBT_v1.2.4.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: tbc
+:dyas a skosmos:Vocabulary, void:Dataset ;
+    dc:title "DYAS Humanities Thesaurus" ;
+    dc:subject :cat_humanities ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://humanitiesthesaurus.academyofathens.gr" ;
+    #skosmos:groupClass skos:Collection ;
+    skosmos:shortName "dyas" ;
+    skosmos:showChangeList "false" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en" , "el" , "de" , "fr" , "la" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:fullAlphabeticalIndex "false" ;
+    skosmos:mainConceptScheme <https://humanitiesthesaurus.academyofathens.gr> ;
+    skosmos:sparqlGraph <https://humanitiesthesaurus.academyofathens.gr> ;
+    void:dataDump <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/DYAS_v3.1_with_2021-07-29_BBT_connections.rdf> , <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/DYAS_v3.1_with_2021-07-29_BBT_connections.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: tbc
+:gemet a skosmos:Vocabulary, void:Dataset ;
+    #dc:title "GEMET - Concepts, version 4.1.0, 2018-07-12T14:49:05.824817+00:00"@en ;
+    dc:title "GEMET" ;
     dc:subject :cat_general ;
-    void:uriSpace "http://zbw.eu/stw/";
-    skosmos:language "en", "de";
-    skosmos:defaultLanguage "de";
-    void:sparqlEndpoint <http://localhost:3030/skosmos/sparql> ;
-    skosmos:sparqlGraph <http://zbw.eu/stw/> .
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "http://www.eionet.europa.eu/gemet/" ;
+    skosmos:groupClass <http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#SuperGroup> ;
+    skosmos:shortName "gemet" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en", "el", "fr", "sv", "sk", "bg", "sl", "ar", "cs", "nl", "fi", "en-US", "de", "pt", "uk", "pl", "ru", "ga", "es", "da", "hr", "ka", "hu", "ca", "az", "tr", "it", "eu", "is", "lv", "et", "ar", "no", "ro", "zh-CN", "lt", "mt", "hy", "cs" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:mainConceptScheme <http://www.eionet.europa.eu/gemet/gemetThesaurus> ;
+    skosmos:sparqlGraph <http://www.eionet.europa.eu/gemet/gemetThesaurus> ;
+    void:dataDump <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/GEMET_v4.1.0_with_2021-07-29_BBT_connections.rdf> , <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/GEMET_v4.1.0_with_2021-07-29_BBT_connections.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: tbc
+:DAI a skosmos:Vocabulary, void:Dataset ;
+    dc:title "iDAI.welt Thesaurus"@de ;
+    dc:subject :cat_general ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://thesauri.dainst.org/" ;
+    skosmos:groupClass skos:Collection ;
+    skosmos:shortName "DAI" ;
+    skosmos:defaultLanguage "de" ;
+    skosmos:language "en" , "de" , "fr" , "pl" , "it" , "es" , "ar" , "zh" , "fa" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:mainConceptScheme <http://thesauri.dainst.org/scheme> ;
+    skosmos:sparqlGraph <https://thesauri.dainst.org/daiThesaurus> ;
+    void:dataDump <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/DAI_v1.0_with_2021-07-29_BBT_connections.rdf> , <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/DAI_v1.0_with_2021-07-29_BBT_connections.ttl> ;
+    void:sparqlEndpoint <http://jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: tbc
+:parthenos_vocabularies a skosmos:Vocabulary, void:Dataset ;
+    dc:title "PARTHENOS Vocabularies"@en ;
+    dc:subject :cat_humanities ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://isl.ics.forth.gr/parthenos_vocabularies" ;
+    skosmos:groupClass parthenos:Facet ;
+    skosmos:shortName "parthenos" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en", "el" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:mainConceptScheme <https://isl.ics.forth.gr/parthenos_vocabularies> ;
+    skosmos:sparqlGraph <https://isl.ics.forth.gr/parthenos_vocabularies> ;
+    void:dataDump <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/PARTHENOS_with_2021-07-29_BBT_connections.rdf> , <https://isl.ics.forth.gr/bbt-federated-thesaurus/downloads/PARTHENOS_with_2021-07-29_BBT_connections.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: 16902
+:tadirah a skosmos:Vocabulary, void:Dataset;
+    dc:title "TaDiRAH: Taxonomy of Digital Research Activities in the Humanities";
+    dc:subject :cat_humanities;
+    dc:type mdrtype:THESAURUS;
+    void:uriSpace "https://vocabs.dariah.eu/tadirah/";
+    skosmos:defaultLanguage "en";
+    skosmos:language "en";
+    skosmos:shortName "tadirah";
+    skosmos:showNotation "false";
+    skosmos:showTopConcepts "true";
+    skosmos:showChangeList "false" ;
+    skosmos:fullAlphabeticalIndex "false";
+    skosmos:mainConceptScheme <https://vocabs.dariah.eu/tadirah/>;
+    skosmos:sparqlGraph <https://vocabs.dariah.eu/tadirah/>;
+    void:dataDump <https://vocabs.dariah.eu/download/tadirah_20210722_v_2_0_1.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+# ACDH-CH-RedmineIssue: 17311
+:date_entities a skosmos:Vocabulary, void:Dataset ;
+    # Should be exactly the same as dc:title metadata in the uploaded SKOS file
+    dc:title "ACDH-CH Linked Open Date Entities";
+    dc:subject :cat_time ;
+    dc:type mdrtype:THESAURUS ;
+    # void:uriSpace should be exactly the same as conceptScheme URI, minus /ConceptScheme> suffix
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/date";
+    skosmos:language "en" ;
+    skosmos:shortName "date" ;
+    skosmos:showChangeList "false" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:showAlphabeticalIndex "false" ;
+    skosmos:showStatistics "false" ;
+    # skosmos:fullAlphabeticalIndex "false" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    # For faster parformance, use "false" to deactivate loading external resources to fetch labels
+    skosmos:loadExternalResources "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/date/conceptScheme> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/date/> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/date/sparql> .
+
+# ACDH-CH-RedmineIssue: 17311
+:ut_entities a skosmos:Vocabulary, void:Dataset ;
+    # Should be exactly the same as dc:title metadata in the uploaded SKOS file
+    dc:title "ACDH-CH Linked Open Date Entities Unit of Time";
+    dc:subject :cat_time ;
+    dc:type mdrtype:THESAURUS ;
+    # void:uriSpace should be exactly the same as conceptScheme URI, minus /ConceptScheme> suffix
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/unit_of_time";
+    skosmos:language "en" ;
+    skosmos:shortName "unit_of_time" ;
+    skosmos:showChangeList "false" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:showTopConcepts "true" ;
+    # skosmos:showNotation "true";
+    skosmos:fullAlphabeticalIndex "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/ut.rdf> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/ut.ttl> ;
+    # For faster parformance, use "false" to deactivate loading external resources to fetch labels
+    skosmos:loadExternalResources "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/unit_of_time/conceptScheme> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/unit_of_time/> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/date/sparql> .
+    #void:sparqlEndpoint <http://skosmos-jena:3030/unit_of_time/sparql> .
+
+:iso639-1 a skosmos:Vocabulary, void:Dataset ;
+    dc:title "ISO 639-1 Language Codes"@en , "ISO 639-1 Sprachcodes"@de ;
+    dc:subject :cat_general ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/iso6391" ;
+    skosmos:shortName "iso6391" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en" , "de" , "fr" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/iso6391/Schema> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/iso6391/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/ISO-639-1-languages.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:iso639_3 a skosmos:Vocabulary, void:Dataset ;
+    dc:title "ISO 639-3 Language Codes"@en , "ISO 639-3 Sprachcodes"@de , "ISO 639-3 Codes de langue"@fr ;
+    dc:subject :cat_general ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/iso6393" ;
+    skosmos:shortName "iso6393" ;
+    #skosmos:groupClass skos:Collection ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en", "de", "fr" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:showNotation "true" ;
+    skosmos:fullAlphabeticalIndex "false" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/iso6393/Schema> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/iso6393/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/ISO-639-3-languages.ttl> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/ISO-639-3-languages.rdf> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:oefos a skosmos:Vocabulary, void:Dataset ;
+    dc:title "ÖFOS 2012. Austrian Fields of Science and Technology Classification 2012"@en ,
+        "ÖFOS 2012. Österreichische Version der 'Fields of Science and Technology (FOS) Classification'"@de ;
+    dc:subject :cat_general ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/oefos" ;
+    skosmos:defaultLanguage "de" ;
+    skosmos:language "de", "en" ;
+    skosmos:shortName "oefosdisciplines" ;
+    skosmos:showChangeList "false" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:hasMultiLingualProperty "true" ;
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/oefosdisciplines/Schema> ;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/oefosdisciplines/Schema> ;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/oefos_20200910.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:vicav_dialects_taxonomy a skosmos:Vocabulary, void:Dataset ;
+    dc:title "VICAV Taxonomy of Arabic Dialects";
+    dc:subject :cat_general;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.acdh.oeaw.ac.at/vicavdialects";
+    skosmos:defaultLanguage "en";
+    skosmos:groupClass skos:Collection;
+    skosmos:language "en";
+    skosmos:shortName "vicavdialects";
+    skosmos:showNotation "false";
+    skosmos:showTopConcepts "true";
+    skosmos:showChangeList "true" ;
+    skosmos:fullAlphabeticalIndex "true";
+    skosmos:hasMulitiLingualProperty "true";
+    skosmos:language "en", "ar";
+    skosmos:mainConceptScheme <https://vocabs.acdh.oeaw.ac.at/vicavdialects>;
+    skosmos:sparqlGraph <https://vocabs.acdh.oeaw.ac.at/vicavdialects>;
+    void:dataDump <https://vocabs.acdh.oeaw.ac.at/download/vicavdialects.ttl> ;
+    void:sparqlEndpoint <http://skosmos-jena:3030/skosmos/sparql> .
+
+:invocation-type a skosmos:Vocabulary, void:Dataset ;
+    dc:title "SSHOC Invocation Types"@en ;
+    dc:subject :cat_sshoc ;
+    dc:type mdrtype:THESAURUS ;
+    void:uriSpace "https://vocabs.dariah.eu/invocation-type" ;
+    skosmos:defaultLanguage "en" ;
+    skosmos:language "en" ;
+    skosmos:shortName "sshocit" ;
+    skosmos:showNotation "false" ;
+    skosmos:showTopConcepts "true" ;
+    skosmos:fullAlphabeticalIndex "true" ;
+    skosmos:mainConceptScheme <https://vocabs.dariah.eu/invocation-type/schemaInvocationType> ;
+    skosmos:sparqlGraph <https://vocabs.dariah.eu/invocation-type/schemaInvocationType> ;
+    void:sparqlEndpoint <http://jena:3030/skosmos/sparql> .
+
+:categories a skos:ConceptScheme;
+    skos:prefLabel "Skosmos Vocabulary Categories"@en .
+
+:cat_general a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Yleiskäsitteet"@fi , "Allmänna begrepp"@sv , "Allgemeine Konzepte"@de , "General concepts"@en .
+
+:cat_metathesaurus a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Meta Thesaurus"@en , "Meta Thesaurus"@de .
+
+:cat_humanities a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Humanities"@en , "Humanities"@de .
+
+:cat_culturalhistory a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Kulturgeschichte"@de , "Cultural History"@en .
+
+:cat_archaeology a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Archäologie"@de , "Archaeology"@en .
+
+:cat_music a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Musik"@de , "Music"@en .
+
+:cat_arche a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "ARCHE"@de , "ARCHE"@en .
+
+:cat_time a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "Time Entities"@de , "Time Entities"@en .
+
+:cat_sshoc a skos:Concept ;
+    skos:topConceptOf :categories ;
+    skos:inScheme :categories ;
+    skos:prefLabel "SSHOC"@de , "SSHOC"@en .
+
+mdrtype:THESAURUS a skos:Concept ;
+    skos:prefLabel "Тезаурус"@bg, "Tezaurus"@cs, "Tesaurus"@da, "Thesaurus"@de, "Θησαυρός"@el, "Thesaurus"@en, "Tesaurus"@et, "Tesaurus"@fi, "Thésaurus"@fr, "Pojmovnik"@hr, "Tezaurusz"@hu, "Tesauro"@it, "Tēzaurs"@lv, "Tezauras"@lt, "Teżawru"@mt, "Thesaurus"@nl, "Tesaurus"@no, "Tezaurus"@pl, "Tesauro"@pt, "Tezaur"@ro, "Synonymický slovník"@sk, "Tezaver"@sl, "Tesauro"@es, "Tesaurus"@sv .
+
+mdrtype:ONTOLOGY a skos:Concept ;
+    skos:prefLabel "Онтология"@bg, "Ontologie"@cs, "Ontologi"@da, "Ontologie"@de, "Οντολογία"@el, "Ontology"@en, "Ontoloogia"@et, "Ontologia"@fi, "Ontologie"@fr, "Ontologija"@hr, "Ontológia"@hu, "Ontologia"@it, "Ontoloģija"@lv, "Ontologija"@lt, "Ontoloġija"@mt, "Ontologie"@nl, "Ontologi"@no, "Struktura pojęciowa"@pl, "Ontologia"@pt, "Ontologie"@ro, "Ontológia"@sk, "Ontologija"@sl, "Ontología"@es, "Ontologi"@sv .
+
+mdrtype:CLASSIFICATION_SYSTEM a skos:Concept ;
+    skos:prefLabel "Classification system"@en.
