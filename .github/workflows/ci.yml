@@ -69,7 +69,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_and_push_to_registry:
-    needs: Run PHPUnit tests
+    needs: build-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
