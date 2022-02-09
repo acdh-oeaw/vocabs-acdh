@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: generate build instructions using herokuish
+        run: |
+          cp -r ./dockerfiles/Dockerfile.ubuntu ./Dockerfile
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -33,7 +36,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          dockerfile: dockerfiles/Dockerfile.ubuntu
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
